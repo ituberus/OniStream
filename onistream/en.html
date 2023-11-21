@@ -323,7 +323,6 @@ function showPopup() {
     overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; display: flex; justify-content: center; align-items: center;';
 
     var popupBox = document.createElement('div');
-    // Set width and dynamic height
     var boxWidth = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.9); // 90% of the smaller dimension
     popupBox.style.cssText = 'background-color: grey; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px; width: ' + boxWidth + 'px; height: ' + boxWidth + 'px; overflow: auto; display: flex; flex-direction: column; justify-content: center; align-items: center;';
 
@@ -335,7 +334,7 @@ function showPopup() {
     document.body.appendChild(overlay);
 
     setTimeout(function() {
-        loadingDiv.innerHTML = '<h5 style="color: #DCFC35; font-size: large; font-weight: bold; text-align: center;">App already installed on this device</h5>';
+        loadingDiv.innerHTML = '<h5 style="color: #DCFC35; font-size: large; font-weight: bold; text-align: center; animation: zoomInOut 1.5s infinite;">App already installed on this device</h5>';
     }, 4000);
 }
 
