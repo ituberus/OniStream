@@ -311,41 +311,29 @@
                     <div class="dlu-detail">
                         <div class="dlu-btn mb-4">
 						<! --// android start  -->
-                            <button class="btn btn-lg btn-radius btn-block btn-pre" onclick="showPopup()">
-    <i class="fab fa-android mr-2"></i>OniStream for Android
-</button>
-
-<script>
+                            <script>
 function showPopup() {
-    // Preventing default link behavior
     event.preventDefault();
 
-    // Create overlay
     var overlay = document.createElement('div');
-    overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; display: flex; justify-content: center; align-items: flex-start; padding-top: 20%;';
+    overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; display: flex; justify-content: center; align-items: center;';
 
-    // Create popup box
     var popupBox = document.createElement('div');
-    popupBox.style.cssText = 'background-color: grey; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px; width: 33%; max-width: 90%; max-height: 90%; overflow: auto; display: flex; flex-direction: column; align-items: center;';
+    // Adjusted width and height for mobile view
+    popupBox.style.cssText = 'background-color: grey; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px; width: 90%; height: 90%; max-width: 90%; max-height: 90%; overflow: auto; display: flex; flex-direction: column; align-items: center;';
 
-    // Add loading animation and text
     var loadingDiv = document.createElement('div');
     loadingDiv.innerHTML = '<div style="border: 16px solid #f3f3f3; border-top: 16px solid #DCFC35; border-radius: 50%; width: 120px; height: 120px; animation: spin 2s linear infinite;"></div><br><h5 style="color: #DCFC35; animation: zoomInOut 1.5s infinite; font-size: large; font-weight: bold;"><center>Loading..</center></h5>';
     popupBox.appendChild(loadingDiv);
 
-    // Append popup box to overlay
     overlay.appendChild(popupBox);
-
-    // Append overlay to body
     document.body.appendChild(overlay);
 
-    // Change content after 4 seconds
     setTimeout(function() {
-        loadingDiv.innerHTML = '<h5 style="color: #DCFC35; animation: zoomInOut 1.5s infinite; font-size: large; font-weight: bold;">App already installed on this device</h5>';
+        loadingDiv.innerHTML = '<h5 style="color: #DCFC35; font-size: large; font-weight: bold;">App already installed on this device</h5>';
     }, 4000);
 }
 
-// Keyframes for animations
 var styleSheet = document.createElement("style");
 styleSheet.type = "text/css";
 styleSheet.innerText = `
@@ -360,6 +348,7 @@ styleSheet.innerText = `
 `;
 document.head.appendChild(styleSheet);
 </script>
+
 
 
 							<! --// android end  -->
