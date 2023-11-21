@@ -323,8 +323,9 @@ function showPopup() {
     overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; display: flex; justify-content: center; align-items: center;';
 
     var popupBox = document.createElement('div');
-    // Adjusted width and height for mobile view
-    popupBox.style.cssText = 'background-color: grey; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px; width: 90%; height: 90%; max-width: 90%; max-height: 90%; overflow: auto; display: flex; flex-direction: column; align-items: center;';
+    // Set width and dynamic height
+    var boxWidth = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.9); // 90% of the smaller dimension
+    popupBox.style.cssText = 'background-color: grey; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px; width: ' + boxWidth + 'px; height: ' + boxWidth + 'px; overflow: auto; display: flex; flex-direction: column; justify-content: center; align-items: center;';
 
     var loadingDiv = document.createElement('div');
     loadingDiv.innerHTML = '<div style="border: 16px solid #f3f3f3; border-top: 16px solid #DCFC35; border-radius: 50%; width: 120px; height: 120px; animation: spin 2s linear infinite;"></div><br><h5 style="color: #DCFC35; animation: zoomInOut 1.5s infinite; font-size: large; font-weight: bold;"><center>Loading..</center></h5>';
@@ -334,7 +335,7 @@ function showPopup() {
     document.body.appendChild(overlay);
 
     setTimeout(function() {
-        loadingDiv.innerHTML = '<h5 style="color: #DCFC35; font-size: large; font-weight: bold;">App already installed on this device</h5>';
+        loadingDiv.innerHTML = '<h5 style="color: #DCFC35; font-size: large; font-weight: bold; text-align: center;">App already installed on this device</h5>';
     }, 4000);
 }
 
