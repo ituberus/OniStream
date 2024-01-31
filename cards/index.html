@@ -17,22 +17,19 @@
       background-color: rgba(0,0,0,0.4);
     }
     .modal-content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #fefefe;
-      padding: 20px;
-      border: 1px solid #888;
-      max-width: 90%; 
-      max-height: 90%; 
-      overflow: auto;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%; // increased from 80%
+    max-width: 90%; // max-width now 90% of the viewport width
+    max-height: 80%; 
+    overflow: auto;
+    text-align: center;
+}
     .modal-content h3 {
       text-align: center;
     }
