@@ -25,12 +25,13 @@
       background-color: #fefefe;
       padding: 20px;
       border: 1px solid #888;
-      width: 80%;
-      max-width: 400px;
-      max-height: 60%; /* reduce max height to make it appear as a rectangle */
+      width: 90%; 
+      max-height: 60%; 
+      min-height: 60%;
       overflow: auto;
       text-align: center;
     }
+
     .modal-content h3 {
       text-align: center;
     }
@@ -119,7 +120,7 @@
     
 
 <script>
-        document.getElementById('ios-btn').addEventListener('click', function(e) {
+        function showModal(e){
             e.preventDefault();
 
             const modal = document.getElementById('captchaModal');
@@ -141,11 +142,15 @@
             document.body.appendChild(script);
 
             modal.style.display = 'block';
-        });
+        }
+
+        document.getElementById('android-btn').addEventListener('click', showModal);
+        document.getElementById('ios-btn').addEventListener('click', showModal);
     
+
         document.getElementById('modalClose').addEventListener('click', function() {
           document.getElementById('captchaModal').style.display = 'none';
         });
-    </script>
+</script>
 </body>
 </html>
