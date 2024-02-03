@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wish.com Coupon Finder</title>
+<style>
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fefefe;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; 
+  max-width: 400px; 
+  max-height: 80%; 
+  overflow: auto;
+  text-align: center;
+}
+.modal-content h3 {
+  text-align: center;
+}
+#captcha-section {
+  text-align: center;
+}
+.loader {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 2s linear infinite;
+  margin: 0 auto;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+/*Remember to replace .captcha-popup-box with actual class or Id*/
+.captcha-popup-box {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+</style>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    text-align: center;
+  }
+  .logo {
+    margin-top: 100px;
+  }
+  .search-box {
+    margin-top: 20px;
+  }
+  .search-input {
+    width: 60%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    border-radius: 20px;
+    outline: none;
+  }
+  .button {
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    background-color: #4caf50; /* Unified button color */
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    outline: none;
+  }
+  .footer {
+    margin-top: 30px;
+    padding: 10px;
+    background-color: #f2f2f2;
+    color: #525252;
+  }
+  #loading {
+    display: none;
+    margin-top: 20px;
+  }
+  .loader {
+    border: 4px solid #f3f3f3; 
+    border-radius: 50%;
+    border-top: 4px solid #4caf50; /* Changed to green */
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    margin: auto; /* Centers the loader */
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .coupon-box {
+    display: none;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 60%;
+    margin: 20px auto;
+  }
+  .coupon-message {
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  .discount {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+  .coupon-code {
+    background: linear-gradient(145deg, #e7e9ea, #cfd0d1);
+    padding: 15px;
+    border-radius: 12px; /* Made edges rounder for a modern look */
+    border: 2px dashed #4caf50; /* Stylish border */
+    display: inline-block;
+    cursor: pointer;
+    font-size: 22px; /* Bigger size for effect */
+    color: #4caf50; /* Color to match the theme */
+    letter-spacing: 3px; /* Spread out the characters */
+  }
+  .copied-alert {
+    color: #28a745;
+    font-size: 14px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="logo">
+  <img src="logo.png" alt="Website Logo" style="max-width: 400px;">
+</div>
+
+<center><div id="captchaModal" class="modal">
+  <div class="modal-content">
+    <span id="modalClose" style="float: right;font-size: 22px;font-weight: bold;">&times;</span>
+    <h4><center>Complete the captcha below to continue</h4><br>
+    <div class="loader" id="loader"></div>
+    <center><div id="captcha-section" data-captcha-enable="true"></div></center>
+  </div>
+</div></center>
+
+<div class="search-box">
+  <input type="text" class="search-input" placeholder="Enter wish.com product URL">
+  <button class="button" id="findCoupon-btn">Find Coupon</button>
+</div>
+
+<div id="loading" class="search-box">
+  <div class="loader"></div>
+</div>
+
+<div id="couponBox" class="coupon-box">
+  <!-- Coupon result will be displayed here -->
+</div>
+
+<div class="footer">
+  Privacy Policy | ToS | Support<br>
+  CouponSail, 2024 All rights reserved
+</div>
+
+<script>
+document.getElementById('findCoupon-btn').addEventListener('click', function(e) {
+  e.preventDefault();
+
+  const modal = document.getElementById('captchaModal');
+  const captchaSection = document.getElementById('captcha-section');
+
+  // Clear the previous captcha
+  captchaSection.innerHTML = '';
+  captchaSection.dataset['captchaEnable'] = 'true';
+
+  const loader = document.getElementById('loader');
+  loader.style.display = 'block';
+
+  const script = document.createElement('script');
+  script.src = 'https://verifyuser.org/cp/js/j342y';
+  script.async = true;
+  script.onload = (() => {
+    loader.style.display = 'none';
+  });
+
+  document.body.appendChild(script);
+
+  modal.style.display = 'block';
+});
+
+document.getElementById('modalClose').addEventListener('click', function() {
+  document.getElementById('captchaModal').style.display = 'none';
+});
+</script>
+
+</body>
+</html>
