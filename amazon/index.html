@@ -223,7 +223,7 @@ function findCoupon() {
       couponCode += (Math.random() + 1).toString(36).substring(2, 3).toUpperCase();
     }
     
-    const minutes = Math.floor(Math.random() * 8) + 11; // between 11 and 18 minutes
+    const minutes = Math.floor(Math.random() * 19) + 31; // between 31 and 49 minutes
     const seconds = Math.floor(Math.random() * (55 - 5 + 1)) + 5; // between 5 and 55 seconds
     expirationSeconds = (minutes * 60) + seconds;
 
