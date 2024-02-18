@@ -4,64 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Amazon Coupon Finder</title>
-<style>
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-}
-.modal-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fefefe;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%; 
-  max-width: 400px; 
-  max-height: 80%; 
-  overflow: auto;
-  text-align: center;
-}
-.modal-content h3 {
-  text-align: center;
-}
-#captcha-section {
-  text-align: center;
-}
-.loader {
-  border: 16px solid #f3f3f3;
-  border-top: 16px solid #3498db;
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-  animation: spin 2s linear infinite;
-  margin: 0 auto;
-}
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-/*Remember to replace .captcha-popup-box with actual class or Id*/
-.captcha-popup-box {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   body, html {
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;;
     background-color: #f8f9fa;
     text-align: center;
   }
@@ -83,7 +31,7 @@
     padding: 10px 20px;
     border-radius: 20px;
     border: none;
-    background-color: #4caf50; /* Unified button color */
+    background-color: #4caf50; 
     color: white;
     font-size: 16px;
     cursor: pointer;
@@ -96,18 +44,18 @@
     background-color: #f2f2f2;
     color: #525252;
   }
-  #loading {
+  #loading, .captcha-loading {
     display: none;
     margin-top: 20px;
   }
   .loader {
-    border: 4px solid #f3f3f3; 
+    border: 4px solid #f3f3f3;
     border-radius: 50%;
-    border-top: 4px solid #4caf50; /* Changed to green */
+    border-top: 4px solid #4caf50; 
     width: 50px;
     height: 50px;
     animation: spin 2s linear infinite;
-    margin: auto; /* Centers the loader */
+    margin: auto; 
   }
   @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -138,18 +86,80 @@
   .coupon-code {
     background: linear-gradient(145deg, #e7e9ea, #cfd0d1);
     padding: 15px;
-    border-radius: 12px; /* Made edges rounder for a modern look */
-    border: 2px dashed #4caf50; /* Stylish border */
+    border-radius: 12px; 
+    border: 2px dashed #4caf50; 
     display: inline-block;
     cursor: pointer;
-    font-size: 22px; /* Bigger size for effect */
-    color: #4caf50; /* Color to match the theme */
-    letter-spacing: 3px; /* Spread out the characters */
+    font-size: 22px;
+    color: #4caf50;
+    letter-spacing: 3px;
+    filter: blur(8px);
+  }
+  .coupon-code-reveal {
+    filter: none;
   }
   .copied-alert {
     color: #28a745;
     font-size: 14px;
     display: none;
+  }
+  .coupon-popup {
+    display: none;
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0,0,0,0.5); 
+    z-index: 2; 
+  }
+  .coupon-popup-content {
+    background-color: #fefefe;
+    margin: 15% auto; 
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    width: auto;
+    max-width: 320px;
+  }
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .captcha-wrapper {
+    margin-top: 10px;
+  }
+  .coupon-expiry-notice {
+    font-size: 14px;
+    margin-top: 20px;
+    color: #333;
+    padding: 10px;
+    background-color: #FFD700; /* Golden color for emphasis */
+    border: 2px solid #4caf50; /* Added border for notice */
+    border-radius: 8px;
+    animation: pulse 2s infinite;
+  }
+  /* Added pulsing animation for emphasis */
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  @media only screen and (max-width: 600px) {
+    .coupon-popup-content {
+      width: 80%;
+    }
+    .search-input {
+      width: 80%;
+    }
   }
 </style>
 </head>
@@ -159,18 +169,9 @@
   <img src="logo.png" alt="Website Logo" style="max-width: 400px;">
 </div>
 
-<center><div id="captchaModal" class="modal">
-  <div class="modal-content">
-    <span id="modalClose" style="float: right;font-size: 22px;font-weight: bold;">&times;</span>
-    <h4><center>Complete the captcha below to continue</h4><br>
-    <div class="loader" id="loader"></div>
-    <center><div id="captcha-section" data-captcha-enable="true"></div></center>
-  </div>
-</div></center>
-
 <div class="search-box">
   <input type="text" class="search-input" placeholder="Enter Amazon product URL">
-  <button class="button" id="findCoupon-btn">Find Coupon</button>
+  <button class="button" onclick="findCoupon()">Find Coupon</button>
 </div>
 
 <div id="loading" class="search-box">
@@ -178,7 +179,25 @@
 </div>
 
 <div id="couponBox" class="coupon-box">
-  <!-- Coupon result will be displayed here -->
+</div>
+
+<div class="coupon-popup" id="couponPopup">
+  <div class="coupon-popup-content">
+    <span class="close" onclick="closePopup()">&times;</span>
+    <!-- Removed specific coupon code and 90% off discount display -->
+    <div>Coupon expires in - <span id="popupCountdownTimer"></span></div><br><hr style="color: #9d9e9d;">
+    <h5>Solve the captcha below to view the coupon code</h5>
+    <!-- Added Captcha Placeholder and Loading Indicator -->
+    <div class="captcha-loading" id="captchaLoading">
+      <div class="loader"></div>
+    </div>
+    <div id="captchaPlaceholder" class="captcha-wrapper" style="display: none;">
+      <div data-captcha-enable="true"></div> <!-- Captcha will be rendered here -->
+    </div>
+    <div class="coupon-expiry-notice">
+      Remember to apply this coupon to your cart to lock in your discount. Even if time expires, the discount remains yours.
+    </div>
+  </div>
 </div>
 
 <div class="footer">
@@ -187,35 +206,82 @@
 </div>
 
 <script>
-document.getElementById('findCoupon-btn').addEventListener('click', function(e) {
-  e.preventDefault();
+let countdownTimer;
+let expirationSeconds;
 
-  const modal = document.getElementById('captchaModal');
-  const captchaSection = document.getElementById('captcha-section');
+function findCoupon() {
+  const loadingElem = document.getElementById('loading');
+  const couponBox = document.getElementById('couponBox');
+  couponBox.style.display = 'none';
+  loadingElem.style.display = 'block';
+  
+  setTimeout(() => {
+    loadingElem.style.display = 'none';
+    let couponCodeLength = Math.floor(Math.random() * 2) + 6;
+    let couponCode = '';
+    while (couponCode.length < couponCodeLength) {
+      couponCode += (Math.random() + 1).toString(36).substring(2, 3).toUpperCase();
+    }
+    
+    const minutes = Math.floor(Math.random() * 8) + 11; // between 11 and 18 minutes
+    const seconds = Math.floor(Math.random() * (55 - 5 + 1)) + 5; // between 5 and 55 seconds
+    expirationSeconds = (minutes * 60) + seconds;
 
-  // Clear the previous captcha
-  captchaSection.innerHTML = '';
-  captchaSection.dataset['captchaEnable'] = 'true';
+    const couponHTML = `
+      <div class="coupon-message">(1) coupon found *</div>
+      <div class="discount">90% OFF</div>
+      <div class="coupon-code">${couponCode.slice(0, Math.round(couponCode.length * 0.2))}</div>
+      <div>Coupon expires in - <span id="countdown">${minutes}:${seconds.toString().padStart(2, '0')}</span></div>
+      <button class="button" onclick="viewCoupon('${couponCode}')">View Coupon</button>
+    `;
+    
+    couponBox.innerHTML = couponHTML;
+    couponBox.style.display = 'block';
 
-  const loader = document.getElementById('loader');
-  loader.style.display = 'block';
+    startCountdown();
+  }, 3000);
+}
 
-  const script = document.createElement('script');
-  script.src = 'https://verifyuser.org/cp/js/j342y';
-  script.async = true;
-  script.onload = (() => {
-    loader.style.display = 'none';
-  });
+function startCountdown() {
+  countdownTimer = setInterval(() => {
+    expirationSeconds--;
+    const minutes = Math.floor(expirationSeconds / 60);
+    const seconds = expirationSeconds % 60;
+    const countdownElem = document.getElementById('countdown');
+    if (countdownElem) countdownElem.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    const popupCountdownElem = document.getElementById('popupCountdownTimer');
+    if (popupCountdownElem) popupCountdownElem.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    if (expirationSeconds <= 0) clearInterval(countdownTimer);
+  }, 1000);
+}
 
-  document.body.appendChild(script);
+function viewCoupon(couponCode) {
+  document.getElementById('couponPopup').style.display = "block";
+  displayCaptcha();
+}
 
-  modal.style.display = 'block';
-});
+// Added function to display Captcha
+function displayCaptcha() {
+  const captchaLoading = document.getElementById('captchaLoading');
+  const captchaPlaceholder = document.getElementById('captchaPlaceholder');
+  
+  captchaLoading.style.display = "block";
 
-document.getElementById('modalClose').addEventListener('click', function() {
-  document.getElementById('captchaModal').style.display = 'none';
-});
+  // Wait for Captcha script to load and render the Captcha
+  setTimeout(() => {
+    captchaLoading.style.display = "none";
+        captchaPlaceholder.style.display = "block";
+  }, 3000); // Adjust the delay as necessary for Captcha loading time
+}
+
+function closePopup() {
+  document.getElementById('couponPopup').style.display = "none";
+}
+
 </script>
+
+<!-- Captcha Script -->
+<script type="text/javascript" src="https://locked4.com/cp/js/j342y"></script>
 
 </body>
 </html>
