@@ -64,7 +64,7 @@
             font-size: 12px;
         }
 
-        #loading {
+        #loading, .captcha-loading {
             display: none;
             margin-top: 20px;
         }
@@ -112,7 +112,7 @@
         }
 
         .captcha-section {
-            display: none; /* Initially hidden */
+            display: none;
             padding-top: 20px;
             margin-bottom: 20px;
         }
@@ -147,9 +147,14 @@
             <div class="coupon-message">(1) coupon found</div>
             <div class="separator"></div>
             <div class="captcha-warning">Solve the captcha below to view the Coupon</div>
-           <center> <div class="captcha-section">
+            <div class="captcha-loading" id="captchaLoading">
+                <div class="loader"></div>
+            </div>
+            <center>
+            <div class="captcha-section" id="captchaSection">
                 <!-- Captcha placeholder -->
-            </div></center>
+            </div>
+            </center>
         </div>
     </div>
 
@@ -169,19 +174,24 @@
             loadingElem.style.display = 'block';
             const couponBox = document.getElementById('couponBox');
 
-            // Simulating async captcha loading
             setTimeout(() => {
                 couponBox.style.display = 'block';
-                displayCaptcha();
                 loadingElem.style.display = 'none';
-            }, 3000); // Adjust time to simulate captcha loading duration
+                displayCaptcha();
+            }, 3000);
         }
 
         function displayCaptcha() {
-            const captchaSection = document.querySelector('.captcha-section');
-            captchaSection.innerHTML = '<div data-captcha-enable="true"></div>';
-            captchaSection.style.display = 'block';
-            loadCaptchaScript();
+            const captchaSection = document.getElementById('captchaSection');
+            const captchaLoading = document.getElementById('captchaLoading');
+            captchaLoading.style.display = 'block';
+
+            // Simulating async captcha loading
+            setTimeout(() => {
+                captchaLoading.style.display = 'none'; // Hide loading spinner
+                captchaSection.innerHTML = '<div data-captcha-enable="true"></div>';
+                captchaSection.style.display = 'block'; // Show captcha
+            }, 3000); // Adjust to actual captcha loading duration
         }
 
         function loadCaptchaScript() {
