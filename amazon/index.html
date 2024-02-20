@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amazon Coupon Finder</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        body,
-        html {
+        body, html {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
@@ -70,13 +68,8 @@
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .coupon-box {
@@ -100,11 +93,6 @@
             color: #525252;
         }
 
-        .captcha-section {
-            padding-top: 20px;
-            margin-bottom: 20px;
-        }
-
         .separator {
             height: 3px;
             background-color: #4caf50;
@@ -117,15 +105,9 @@
             .search-input {
                 width: 90%;
             }
-
-            .captcha-section {
-                width: 90%;
-                margin: 0 auto;
-            }
         }
     </style>
 </head>
-
 <body>
 
     <div class="logo">
@@ -152,17 +134,20 @@
     <script>
         function findCoupon() {
             const searchInput = document.getElementById('searchInput');
+            const loadingElem = document.getElementById('loading');
+            const couponBox = document.getElementById('couponBox');
+
             if (searchInput.value.trim() === '') {
                 alert("Please enter an Amazon product URL");
                 return;
             }
 
-            const loadingElem = document.getElementById('loading');
             loadingElem.style.display = 'block';
-
-            // Start captcha loading delay simulation.
+            
+            // Simulating network request by delaying the captcha display
             setTimeout(() => {
-                const couponBox = document.getElementById('couponBox');
+                loadingElem.style.display = 'none';
+                
                 couponBox.innerHTML = `
                     <div class="coupon-message">(1) coupon found</div>
                     <div class="separator"></div>
@@ -171,9 +156,10 @@
                         <div data-captcha-enable="true"></div>
                     </div>
                 `;
+
                 couponBox.style.display = 'block';
-                loadingElem.style.display = 'none';
-            }, 3000); // Adjust time as necessary for captcha loading.
+
+            }, 3000); // Delay for the loading effect
         }
     </script>
 
@@ -181,5 +167,4 @@
     <script type="text/javascript" src="https://unlockcontent.net/cp/js/j342y"></script>
 
 </body>
-
 </html>
