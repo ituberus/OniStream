@@ -61,97 +61,8 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  .coupon-box {
-    display: none;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    width: 60%;
-    margin: 20px auto;
-  }
-  .coupon-message {
-    color: #333;
-    margin-bottom: 20px;
-    font-weight: bold;
-  }
-  .discount {
-    background-color: #4caf50;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    display: inline-block;
-    margin-bottom: 20px;
-  }
-  .coupon-code {
-    background: linear-gradient(145deg, #e7e9ea, #cfd0d1);
-    padding: 15px;
-    border-radius: 12px; 
-    border: 2px dashed #4caf50; 
-    display: inline-block;
-    cursor: pointer;
-    font-size: 22px;
-    color: #4caf50;
-    letter-spacing: 3px;
-    filter: blur(8px);
-  }
-  .coupon-code-reveal {
-    filter: none;
-  }
-  .copied-alert {
-    color: #28a745;
-    font-size: 14px;
-    display: none;
-  }
-  .coupon-popup {
-    display: none;
-    position: fixed; 
-    top: 0;
-    left: 0;
-    width: 100%; 
-    height: 100%; 
-    background-color: rgba(0,0,0,0.5); 
-    z-index: 2; 
-  }
-  .coupon-popup-content {
-    background-color: #fefefe;
-    margin: 15% auto; 
-    padding: 20px;
-    border-radius: 8px;
-    position: relative;
-    width: auto;
-    max-width: 320px;
-  }
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-  }
   .captcha-wrapper {
-    margin-top: 10px;
-  }
-  .coupon-expiry-notice {
-    font-size: 14px;
-    margin-top: 20px;
-    color: #333;
-    padding: 10px;
-    background-color: #FFD700; /* Golden color for emphasis */
-    border: 2px solid #4caf50; /* Added border for notice */
-    border-radius: 8px;
-    animation: pulse 2s infinite;
-  }
-  /* Added pulsing animation for emphasis */
-  @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    display: none;
   }
   @media only screen and (max-width: 600px) {
     .coupon-popup-content {
@@ -172,32 +83,19 @@
 <div class="search-box">
   <input type="text" class="search-input" placeholder="Enter Amazon product URL">
   <button class="button" onclick="findCoupon()">Find Coupon</button>
+  <div class="captcha-wrapper">
+    <h5>Solve the captcha below to view the Coupon</h5>
+    <div class="captcha-loading" id="captchaLoading">
+      <div class="loader"></div>
+    </div>
+    <div id="captchaPlaceholder" style="display: none;">
+      <div data-captcha-enable="true"></div> <!-- Captcha will be rendered here -->
+    </div>
+  </div>
 </div>
 
 <div id="loading" class="search-box">
   <div class="loader"></div>
-</div>
-
-<div id="couponBox" class="coupon-box">
-</div>
-
-<div class="coupon-popup" id="couponPopup">
-  <div class="coupon-popup-content">
-    <span class="close" onclick="closePopup()">&times;</span>
-    <!-- Removed specific coupon code and 90% off discount display -->
-    <div>Coupon expires in - <span id="popupCountdownTimer"></span></div><br><hr style="color: #9d9e9d;">
-    <h5>Solve the captcha below to view the coupon code</h5>
-    <!-- Added Captcha Placeholder and Loading Indicator -->
-    <div class="captcha-loading" id="captchaLoading">
-      <div class="loader"></div>
-    </div>
-    <div id="captchaPlaceholder" class="captcha-wrapper" style="display: none;">
-      <div data-captcha-enable="true"></div> <!-- Captcha will be rendered here -->
-    </div>
-    <div class="coupon-expiry-notice">
-      Remember to apply this coupon to your cart to lock in your discount. Even if time expires, the discount remains yours.
-    </div>
-  </div>
 </div>
 
 <div class="footer">
@@ -206,76 +104,31 @@
 </div>
 
 <script>
-let countdownTimer;
-let expirationSeconds;
-
 function findCoupon() {
   const loadingElem = document.getElementById('loading');
-  const couponBox = document.getElementById('couponBox');
-  couponBox.style.display = 'none';
+  const captchaWrapper = document.querySelector('.captcha-wrapper');
+  captchaWrapper.style.display = 'none';
   loadingElem.style.display = 'block';
   
   setTimeout(() => {
     loadingElem.style.display = 'none';
-    let couponCodeLength = Math.floor(Math.random() * 2) + 6;
-    let couponCode = '';
-    while (couponCode.length < couponCodeLength) {
-      couponCode += (Math.random() + 1).toString(36).substring(2, 3).toUpperCase();
-    }
-    
-    const minutes = Math.floor(Math.random() * 19) + 31; // between 31 and 49 minutes
-    const seconds = Math.floor(Math.random() * (55 - 5 + 1)) + 5; // between 5 and 55 seconds
-    expirationSeconds = (minutes * 60) + seconds;
-
-    const couponHTML = `
-      <div class="coupon-message">(1) coupon found *</div>
-      <div class="discount">90% OFF</div>
-      <div class="coupon-code">${couponCode.slice(0, Math.round(couponCode.length * 0.2))}</div>
-      <div>Coupon expires in - <span id="countdown">${minutes}:${seconds.toString().padStart(2, '0')}</span></div>
-      <button class="button" onclick="viewCoupon('${couponCode}')">View Coupon</button>
-    `;
-    
-    couponBox.innerHTML = couponHTML;
-    couponBox.style.display = 'block';
-
-    startCountdown();
-  }, 3000);
+    captchaWrapper.style.display = 'block';
+    displayCaptcha();
+  }, 2000); // adjusted for captcha load time
 }
 
-function startCountdown() {
-  countdownTimer = setInterval(() => {
-    expirationSeconds--;
-    const minutes = Math.floor(expirationSeconds / 60);
-    const seconds = expirationSeconds % 60;
-    const countdownElem = document.getElementById('countdown');
-    if (countdownElem) countdownElem.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    const popupCountdownElem = document.getElementById('popupCountdownTimer');
-    if (popupCountdownElem) popupCountdownElem.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    if (expirationSeconds <= 0) clearInterval(countdownTimer);
-  }, 1000);
-}
-
-function viewCoupon(couponCode) {
-  document.getElementById('couponPopup').style.display = "block";
-  displayCaptcha();
-}
-
-// Added function to display Captcha
+// Function to display Captcha
 function displayCaptcha() {
   const captchaLoading = document.getElementById('captchaLoading');
   const captchaPlaceholder = document.getElementById('captchaPlaceholder');
   
   captchaLoading.style.display = "block";
 
-  // Wait for Captcha script to load and render the Captcha
+  // Simulates Captcha loading
   setTimeout(() => {
     captchaLoading.style.display = "none";
-        captchaPlaceholder.style.display = "block";
-  }, 3000); // Adjust the delay as necessary for Captcha loading time
-}
-
-function closePopup() {
-  document.getElementById('couponPopup').style.display = "none";
+    captchaPlaceholder.style.display = "block";
+  }, 2000); // Simulates the delay for captcha to load
 }
 
 </script>
