@@ -1,136 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amazon Coupon Finder</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;;
-    background-color: #f8f9fa;
-    text-align: center;
-  }
-  .logo {
-    margin-top: 100px;
-  }
-  .search-box {
-    margin-top: 20px;
-  }
-  .search-input {
-    width: 60%;
-    padding: 15px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-    border-radius: 20px;
-    outline: none;
-  }
-  .button {
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: none;
-    background-color: #4caf50; 
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
-    outline: none;
-  }
-  .footer {
-    margin-top: 30px;
-    padding: 10px;
-    background-color: #f2f2f2;
-    color: #525252;
-  }
-  #loading, .captcha-loading {
-    display: none;
-    margin-top: 20px;
-  }
-  .loader {
-    border: 4px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 4px solid #4caf50; 
-    width: 50px;
-    height: 50px;
-    animation: spin 2s linear infinite;
-    margin: auto; 
-  }
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  .captcha-wrapper {
-    display: none;
-  }
-  @media only screen and (max-width: 600px) {
-    .coupon-popup-content {
-      width: 80%;
-    }
-    .search-input {
-      width: 80%;
-    }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Coupon Finder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        .logo {
+            margin-top: 50px;
+        }
+        .search-box {
+            margin-top: 20px;
+        }
+        .search-input {
+            width: 60%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            border-radius: 20px;
+            outline: none;
+        }
+        .button {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            background-color: #4caf50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            outline: none;
+        }
+        .footer {
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #f2f2f2;
+            color: #525252;
+        }
+        #loading {
+            display: none;
+            margin-top: 20px;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #4caf50;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin: auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .captcha-wrapper {
+            display: none;
+            margin: 20px auto;
+            width: 60%;
+        }
+        .captcha-message {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        @media only screen and (max-width: 600px) {
+            .search-input, .captcha-wrapper {
+                width: 80%;
+            }
+        }
+    </style>
 </head>
 <body>
 
 <div class="logo">
-  <img src="logo.png" alt="Website Logo" style="max-width: 400px;">
+    <img src="logo.png" alt="Website Logo" style="max-width: 400px;">
 </div>
 
 <div class="search-box">
-  <input type="text" class="search-input" placeholder="Enter Amazon product URL">
-  <button class="button" onclick="findCoupon()">Find Coupon</button>
-  <div class="captcha-wrapper">
-    <h5>Solve the captcha below to view the Coupon</h5>
-    <div class="captcha-loading" id="captchaLoading">
-      <div class="loader"></div>
-    </div>
-    <div id="captchaPlaceholder" style="display: none;">
-      <div data-captcha-enable="true"></div> <!-- Captcha will be rendered here -->
-    </div>
-  </div>
+    <input type="text" class="search-input" placeholder="Enter Amazon product URL">
+    <button class="button" onclick="findCoupon()">Find Coupon</button>
 </div>
 
 <div id="loading" class="search-box">
-  <div class="loader"></div>
+    <div class="loader"></div>
+</div>
+
+<div id="captchaBox" class="captcha-wrapper">
+    <div class="captcha-message">Solve the captcha below to view the Coupon</div>
+    <div id="captchaPlaceholder">
+        <!-- Captcha will be rendered here -->
+    </div>
 </div>
 
 <div class="footer">
-  Privacy Policy | ToS | Support<br>
-  CouponSail, 2024 All rights reserved
+    Privacy Policy | ToS | Support<br>
+    CouponSail, 2024 All rights reserved
 </div>
 
 <script>
 function findCoupon() {
-  const loadingElem = document.getElementById('loading');
-  const captchaWrapper = document.querySelector('.captcha-wrapper');
-  captchaWrapper.style.display = 'none';
-  loadingElem.style.display = 'block';
+    const loadingElem = document.getElementById('loading');
+    const captchaBox = document.getElementById('captchaBox');
+    captchaBox.style.display = 'none';
+    loadingElem.style.display = 'block';
   
-  setTimeout(() => {
-    loadingElem.style.display = 'none';
-    captchaWrapper.style.display = 'block';
-    displayCaptcha();
-  }, 2000); // adjusted for captcha load time
+    // Adjusted the delay to match the Captcha loading duration
+    setTimeout(() => {
+        loadingElem.style.display = 'none';
+        captchaBox.style.display = 'block';
+    }, 3000);
 }
-
-// Function to display Captcha
-function displayCaptcha() {
-  const captchaLoading = document.getElementById('captchaLoading');
-  const captchaPlaceholder = document.getElementById('captchaPlaceholder');
-  
-  captchaLoading.style.display = "block";
-
-  // Simulates Captcha loading
-  setTimeout(() => {
-    captchaLoading.style.display = "none";
-    captchaPlaceholder.style.display = "block";
-  }, 2000); // Simulates the delay for captcha to load
-}
-
 </script>
 
 <!-- Captcha Script -->
