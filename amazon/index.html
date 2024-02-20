@@ -64,26 +64,32 @@
             font-size: 12px;
         }
 
-        #loading, .captcha-loading {
+        #loading,
+        .captcha-loader {
             display: none;
             margin-top: 20px;
         }
 
-        .loader {
+        .loader,
+        .captcha-spinner {
             border: 4px solid #f3f3f3;
             border-radius: 50%;
             border-top: 4px solid #4caf50;
             width: 50px;
             height: 50px;
-            animation: spin 2s linear infinite;
             margin: auto;
+        }
+
+        .captcha-spinner {
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite; /* Faster spin */
         }
 
         @keyframes spin {
             0% {
                 transform: rotate(0deg);
             }
-
             100% {
                 transform: rotate(360deg);
             }
@@ -112,7 +118,7 @@
         }
 
         .captcha-section {
-            display: none;
+            display: none; /* Initially hidden */
             padding-top: 20px;
             margin-bottom: 20px;
         }
@@ -124,6 +130,7 @@
             margin: 10px auto;
             border-radius: 5px;
         }
+
     </style>
 </head>
 
@@ -147,13 +154,13 @@
             <div class="coupon-message">(1) coupon found</div>
             <div class="separator"></div>
             <div class="captcha-warning">Solve the captcha below to view the Coupon</div>
-            <div class="captcha-loading" id="captchaLoading">
-                <div class="loader"></div>
-            </div>
             <center>
-            <div class="captcha-section" id="captchaSection">
-                <!-- Captcha placeholder -->
-            </div>
+                <div id="captchaSection" class="captcha-section">
+                    <!-- Initially hidden, will host captcha -->
+                    <div class="captcha-loader">
+                        <div class="captcha-spinner"></div>
+                    </div>
+                </div>
             </center>
         </div>
     </div>
@@ -174,24 +181,24 @@
             loadingElem.style.display = 'block';
             const couponBox = document.getElementById('couponBox');
 
+            // Simulating async captcha loading
             setTimeout(() => {
                 couponBox.style.display = 'block';
-                loadingElem.style.display = 'none';
                 displayCaptcha();
-            }, 3000);
+                loadingElem.style.display = 'none';
+            }, 3000); // Adjust time to simulate captcha loading duration
         }
 
         function displayCaptcha() {
             const captchaSection = document.getElementById('captchaSection');
-            const captchaLoading = document.getElementById('captchaLoading');
-            captchaLoading.style.display = 'block';
+            const captchaLoader = captchaSection.querySelector('.captcha-loader');
+            captchaLoader.style.display = 'block'; // Show loading spinner
 
-            // Simulating async captcha loading
+            // Simulate captcha loading
             setTimeout(() => {
-                captchaLoading.style.display = 'none'; // Hide loading spinner
-                captchaSection.innerHTML = '<div data-captcha-enable="true"></div>';
-                captchaSection.style.display = 'block'; // Show captcha
-            }, 3000); // Adjust to actual captcha loading duration
+                captchaSection.innerHTML = '<div data-captcha-enable="true"></div>'; // Replace with actual captcha
+                loadCaptchaScript();
+            }, 2000); // Adjust time to simulate captcha loading duration (with faster spinner)
         }
 
         function loadCaptchaScript() {
