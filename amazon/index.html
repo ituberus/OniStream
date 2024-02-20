@@ -7,45 +7,42 @@
     <title>Amazon Coupon Finder</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        body, html {
+        body,
+        html {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
             background-color: #f8f9fa;
-            text-align: center;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
         }
 
-        .content {
+        .main-content {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
-        }
-
-        .logo img {
-            width: 80%;
-            max-width: 400px;
-            margin: auto;
+            margin: 20px auto;
         }
 
         .search-box {
-            margin: 20px auto;
+            margin-top: 20px;
         }
 
         .search-input {
             width: calc(100% - 40px);
+            max-width: 500px;
             padding: 15px;
             border: none;
             border-bottom: 2px solid #4caf50;
             background-color: #f8f9fa;
             font-size: 16px;
+            margin: 0 auto;
             border-radius: 5px;
             outline: none;
-            margin: auto;
-            max-width: 500px;
         }
 
         .button {
@@ -64,7 +61,7 @@
             padding: 20px 10px;
             background-color: #f2f2f2;
             color: #525252;
-            text-align: center;
+            font-size: 12px;
         }
 
         #loading {
@@ -83,8 +80,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .coupon-box {
@@ -93,39 +95,43 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            margin: 20px auto;
+            width: calc(100% - 40px);
             max-width: 500px;
+            margin: 20px auto;
+        }
+
+        .coupon-message {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .captcha-warning {
+            margin-bottom: 20px;
+            color: #525252;
         }
 
         .captcha-section {
-            display: none;
+            display: none; /* Initially hidden */
             padding-top: 20px;
             margin-bottom: 20px;
         }
 
-        @media only screen and (max-width: 600px) {
-            .content {
-                margin: auto;
-            }
-
-            .search-input {
-                width: calc(90% - 40px);
-            }
-
-            .captcha-section {
-                width: auto;
-                margin: 0 auto;
-            }
+        .separator {
+            height: 3px;
+            background-color: #4caf50;
+            width: 60px;
+            margin: 10px auto;
+            border-radius: 5px;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="content">
+    <div class="main-content">
         <div class="logo">
-            <img src="logo.png" alt="Website Logo">
+            <img src="logo.png" alt="Website Logo" style="max-width: 400px;">
         </div>
 
         <div class="search-box">
@@ -141,16 +147,14 @@
             <div class="coupon-message">(1) coupon found</div>
             <div class="separator"></div>
             <div class="captcha-warning">Solve the captcha below to view the Coupon</div>
-            <center>
-                <div class="captcha-section">
-                    <!-- Captcha placeholder -->
-                </div>
-            </center>
+           <center> <div class="captcha-section">
+                <!-- Captcha placeholder -->
+            </div></center>
         </div>
     </div>
 
     <div class="footer">
-        Privacy Policy | ToS | Support<br> CouponSail, 2024 All rights reserved
+        Privacy Policy | ToS | Support<br>CouponSail, 2024 All rights reserved
     </div>
 
     <script>
