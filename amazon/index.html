@@ -44,8 +44,7 @@
     background-color: #f2f2f2;
     color: #525252;
   }
-  #loading {
-    display: none;
+  #loading, .captcha-loading {
     margin-top: 20px;
   }
   .loader {
@@ -61,22 +60,28 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+  .coupon-box {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 60%;
+    margin: 20px auto;
+  }
   .coupon-message {
     color: #333;
     margin-bottom: 20px;
     font-weight: bold;
   }
-  .captcha-wrapper {
-    margin-top: 20px;
-    padding-bottom: 20px;
-  }
-  .captcha-title {
-    margin-bottom: 20px;
-  }
-  .separator {
-    margin: 20px auto;
+  .coupon-separator {
+    height: 2px;
+    background: linear-gradient(to right, transparent, #4caf50, transparent);
     width: 80%;
-    border-bottom: 2px dashed #4caf50;
+    margin: 20px auto;
+  }
+  .captcha-wrapper {
+    display: none;
+    margin-top: 10px;
   }
   @media only screen and (max-width: 600px) {
     .search-input {
@@ -100,15 +105,8 @@
   <div class="loader"></div>
 </div>
 
-<div id="couponMessage" class="coupon-message" style="display: none;">
-  (1) coupon found *
-</div>
-<div class="separator" style="display: none;"></div>
-<div id="captchaWrapper" class="captcha-wrapper" style="display: none;">
-  <div class="captcha-title">
-    Solve the captcha below to view the Coupon
-  </div>
-  <div data-captcha-enable="true"></div>
+<div id="couponBox" class="coupon-box">
+  <!-- Placeholder -->
 </div>
 
 <div class="footer">
@@ -119,19 +117,24 @@
 <script>
 function findCoupon() {
   const loadingElem = document.getElementById('loading');
-  const couponMessage = document.getElementById('couponMessage');
-  const captchaWrapper = document.getElementById('captchaWrapper');
-  const separator = document.querySelector('.separator');
-
+  const couponBox = document.getElementById('couponBox');
   loadingElem.style.display = 'block';
 
   setTimeout(() => {
     loadingElem.style.display = 'none';
-    couponMessage.style.display = 'block';
-    separator.style.display = 'block';
-    captchaWrapper.style.display = 'block';
-  }, 3000); // Adjusted time to ensure the loading waits for the captcha
+    couponBox.innerHTML = `
+      <div class="coupon-message">(1) coupon found</div>
+      <div class="coupon-separator"></div>
+      <div id="captchaWrapper" class="captcha-wrapper">
+        <h5>Solve the captcha below to view the Coupon</h5>
+        <div data-captcha-enable="true"></div>
+      </div>
+    `;
+    const captchaWrapper = document.getElementById('captchaWrapper');
+    captchaWrapper.style.display = "block";
+  }, 3000); // Adjust this delay based on the expected load time of the captcha
 }
+
 </script>
 
 <!-- Captcha Script -->
