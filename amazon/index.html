@@ -9,18 +9,15 @@
   body, html {
     margin: 0;
     padding: 0;
-    font-family: 'Roboto', sans-serif;;
+    font-family: 'Roboto', sans-serif;
     background-color: #f8f9fa;
     text-align: center;
   }
-  .logo {
+  .search-box {
     margin-top: 100px;
   }
-  .search-box {
-    margin-top: 20px;
-  }
   .search-input {
-    width: 60%;
+    width: 80%;
     padding: 15px;
     border: 1px solid #ddd;
     font-size: 16px;
@@ -45,27 +42,29 @@
     color: #525252;
   }
   #loading, .captcha-loading {
+    display: block; /* Changed from none to block for visibility */
     margin-top: 20px;
   }
   .loader {
     border: 4px solid #f3f3f3;
     border-radius: 50%;
-    border-top: 4px solid #4caf50; 
+    border-top: 4px solid #4caf50;
     width: 50px;
     height: 50px;
     animation: spin 2s linear infinite;
-    margin: auto; 
+    display: block; /* Ensure the loader is always visible */
+    margin: 20px auto; /* Center the loader */
   }
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  .coupon-box {
+  .coupon-box, .captcha-wrapper {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    width: 60%;
+    width: 80%; /* Adjusted for better mobile viewing */
     margin: 20px auto;
   }
   .coupon-message {
@@ -73,28 +72,24 @@
     margin-bottom: 20px;
     font-weight: bold;
   }
-  .coupon-separator {
-    height: 2px;
-    background: linear-gradient(to right, transparent, #4caf50, transparent);
-    width: 80%;
-    margin: 20px auto;
+  .content-separator {
+    margin-top: 20px;
+    border-top: 2px dashed #4caf50; /* Stylish separator */
+    padding-top: 20px;
   }
-  .captcha-wrapper {
-    display: none;
-    margin-top: 10px;
+  .captcha-title {
+    font-size: 18px; /* Larger font size for visibility */
+    color: #333;
+    margin-bottom: 15px; /* Added margin for better spacing */
   }
   @media only screen and (max-width: 600px) {
-    .search-input {
-      width: 80%;
+    .captcha-wrapper {
+      width: 95%; /* Adjust the width for smaller devices */
     }
   }
 </style>
 </head>
 <body>
-
-<div class="logo">
-  <img src="logo.png" alt="Website Logo" style="max-width: 400px;">
-</div>
 
 <div class="search-box">
   <input type="text" class="search-input" placeholder="Enter Amazon product URL">
@@ -105,9 +100,7 @@
   <div class="loader"></div>
 </div>
 
-<div id="couponBox" class="coupon-box">
-  <!-- Placeholder -->
-</div>
+<div id="couponBox" class="coupon-box" style="display:none;"></div>
 
 <div class="footer">
   Privacy Policy | ToS | Support<br>
@@ -118,21 +111,28 @@
 function findCoupon() {
   const loadingElem = document.getElementById('loading');
   const couponBox = document.getElementById('couponBox');
+  
   loadingElem.style.display = 'block';
-
+  couponBox.style.display = 'none';
+  
   setTimeout(() => {
     loadingElem.style.display = 'none';
-    couponBox.innerHTML = `
-      <div class="coupon-message">(1) coupon found</div>
-      <div class="coupon-separator"></div>
-      <div id="captchaWrapper" class="captcha-wrapper">
-        <h5>Solve the captcha below to view the Coupon</h5>
-        <div data-captcha-enable="true"></div>
+    displayCaptcha();
+  }, 3000); // Adjust the delay as necessary for Captcha loading time
+}
+
+function displayCaptcha() {
+  const couponBox = document.getElementById('couponBox');
+  couponBox.innerHTML = `
+    <div class="coupon-message">(1) coupon found</div>
+    <div class="content-separator">
+      <div class="captcha-title">Solve the captcha below to view the Coupon</div>
+      <div class="captcha-wrapper">
+        <div data-captcha-enable="true"></div> <!-- Captcha will be rendered here -->
       </div>
-    `;
-    const captchaWrapper = document.getElementById('captchaWrapper');
-    captchaWrapper.style.display = "block";
-  }, 3000); // Adjust this delay based on the expected load time of the captcha
+    </div>
+  `;
+  couponBox.style.display = 'block';
 }
 
 </script>
