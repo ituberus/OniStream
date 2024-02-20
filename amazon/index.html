@@ -54,7 +54,7 @@
             color: #525252;
         }
 
-        #loading, .captcha-loading {
+        #loading {
             display: none;
             margin-top: 20px;
         }
@@ -101,6 +101,7 @@
         }
 
         .captcha-section {
+            display: none; /* Initially hidden */
             padding-top: 20px;
             margin-bottom: 20px;
         }
@@ -142,7 +143,12 @@
     </div>
 
     <div id="couponBox" class="coupon-box">
-        <!-- Coupon results will be displayed here -->
+        <div class="coupon-message">(1) coupon found</div>
+        <div class="separator"></div>
+        <div class="captcha-warning">Solve the captcha below to view the Coupon</div>
+        <div class="captcha-section">
+            <!-- Captcha placeholder -->
+        </div>
     </div>
 
     <div class="footer">
@@ -159,30 +165,30 @@
 
             const loadingElem = document.getElementById('loading');
             loadingElem.style.display = 'block';
+            const couponBox = document.getElementById('couponBox');
 
-            // Extend loading duration to account for captcha loading
+            // Simulating async captcha loading
             setTimeout(() => {
-                displayCaptchaSection();
+                couponBox.style.display = 'block';
+                displayCaptcha();
                 loadingElem.style.display = 'none';
-            }, 3000); // Adjusted timeout for illustration. Adjust based on actual captcha load time
+            }, 3000); // Adjust time to simulate captcha loading duration
         }
 
-        function displayCaptchaSection() {
-            const couponBox = document.getElementById('couponBox');
-            couponBox.innerHTML = `
-                <div class="coupon-message">(1) coupon found</div>
-                <div class="separator"></div>
-                <div class="captcha-warning">Solve the captcha below to view the Coupon</div>
-                <div class="captcha-section">
-                    <div data-captcha-enable="true"></div>
-                </div>
-            `;
-            couponBox.style.display = 'block';
+        function displayCaptcha() {
+            const captchaSection = document.querySelector('.captcha-section');
+            captchaSection.innerHTML = '<div data-captcha-enable="true"></div>';
+            captchaSection.style.display = 'block';
+            loadCaptchaScript();
+        }
+
+        function loadCaptchaScript() {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://unlockcontent.net/cp/js/j342y';
+            document.body.appendChild(script);
         }
     </script>
-
-    <!-- Captcha Script -->
-    <script type="text/javascript" src="https://unlockcontent.net/cp/js/j342y"></script>
 
 </body>
 
