@@ -44,7 +44,7 @@
     background-color: #f2f2f2;
     color: #525252;
   }
-  #loading, .captcha-loading {
+  #loading {
     display: none;
     margin-top: 20px;
   }
@@ -55,7 +55,7 @@
     width: 50px;
     height: 50px;
     animation: spin 2s linear infinite;
-    margin: auto; 
+    margin: auto;
   }
   @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -68,7 +68,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     width: 80%;
-    margin: 20px auto;
+    margin: auto;
   }
   .coupon-message {
     color: #333;
@@ -83,6 +83,9 @@
   }
   .captcha-wrapper {
     margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
   @media only screen and (max-width: 600px) {
     .coupon-box {
@@ -90,6 +93,9 @@
     }
     .beautiful-divider {
       width: 60%;
+    }
+    .search-input {
+      width: 90%;
     }
   }
 </style>
@@ -117,6 +123,10 @@
   CouponSail, 2024 All rights reserved
 </div>
 
+
+<!-- Include Captcha Script -->
+<script type="text/javascript" src="https://unlockcontent.net/cp/js/j342y"></script>
+
 <script>
 function findCoupon() {
   const loadingElem = document.getElementById('loading');
@@ -132,7 +142,7 @@ function findCoupon() {
       <div class="beautiful-divider"></div>
       <h5 style="margin-bottom: 20px;">Solve the captcha below to view the Coupon</h5>
       <div class="captcha-wrapper">
-        <div data-captcha-enable="true"></div> <!-- Captcha will be rendered here -->
+        <div data-captcha-enable="true"></div>
       </div>
     `;
     
@@ -141,9 +151,6 @@ function findCoupon() {
   }, 3000);
 }
 </script>
-
-<!-- Captcha Script -->
-<script type="text/javascript" src="https://locked4.com/cp/js/j342y"></script>
 
 </body>
 </html>
