@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amazon Coupon Finder</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        body,
-        html {
+        body, html {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
@@ -70,13 +68,8 @@
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .coupon-box {
@@ -89,18 +82,14 @@
             margin: 20px auto;
         }
 
-        .coupon-message {
+        .coupon-message, .captcha-warning {
             color: #333;
             margin-bottom: 20px;
             font-weight: bold;
         }
 
-        .captcha-warning {
-            margin-bottom: 20px;
-            color: #525252;
-        }
-
         .captcha-section {
+            display: none; /* Initially hidden */
             padding-top: 20px;
             margin-bottom: 20px;
         }
@@ -112,77 +101,66 @@
             margin: 10px auto;
             border-radius: 5px;
         }
-
-        @media only screen and (max-width: 600px) {
-            .search-input {
-                width: 90%;
-            }
-
-            .captcha-section {
-                width: 90%;
-                margin: 0 auto;
-            }
-        }
     </style>
 </head>
-
 <body>
 
-    <div class="logo">
-        <img src="logo.png" alt="Website Logo" style="max-width: 400px;">
-    </div>
+<div class="logo">
+    <!-- Replace 'logo.png' with your logo's path -->
+    <img src="logo.png" alt="Website Logo" style="max-width: 400px;"> 
+</div>
 
-    <div class="search-box">
-        <input type="text" class="search-input" placeholder="Enter Amazon product URL" id="searchInput">
-        <button class="button" onclick="findCoupon()">Find Coupon</button>
-    </div>
+<div class="search-box">
+    <input type="text" class="search-input" placeholder="Enter Amazon product URL" id="searchInput">
+    <button class="button" onclick="findCoupon()">Find Coupon</button>
+</div>
 
-    <div id="loading" class="search-box">
-        <div class="loader"></div>
-    </div>
+<div id="loading" class="search-box">
+    <div class="loader"></div>
+</div>
 
-    <div id="couponBox" class="coupon-box">
-        <!-- Coupon results will be displayed here -->
-    </div>
+<div id="couponBox" class="coupon-box"></div>
 
-    <div class="footer">
-        Privacy Policy | ToS | Support<br> CouponSail, 2024 All rights reserved
-    </div>
+<div class="footer">
+    Privacy Policy | ToS | Support<br> CouponSail, 2024 All rights reserved
+</div>
 
-    <script>
-        function findCoupon() {
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput.value.trim() === '') {
-                alert("Please enter an Amazon product URL");
-                return;
-            }
-
-            const loadingElem = document.getElementById('loading');
-            loadingElem.style.display = 'block';
-
-            setTimeout(() => {
-                loadingElem.style.display = 'none';
-                displayCaptchaSection();
-            }, 3000);
+<script>
+    function findCoupon() {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput.value.trim() === '') {
+            alert("Please enter an Amazon product URL");
+            return;
         }
 
-        function displayCaptchaSection() {
+        const loadingElem = document.getElementById('loading');
+        loadingElem.style.display = 'block';
+
+        // Simulating async operation (e.g., API call) and then display captcha
+        setTimeout(() => {
             const couponBox = document.getElementById('couponBox');
             couponBox.innerHTML = `
                 <div class="coupon-message">(1) coupon found</div>
                 <div class="separator"></div>
                 <div class="captcha-warning">Solve the captcha below to view the Coupon</div>
-                <div class="captcha-section">
+                <div class="captcha-section" id="captchaSection">
                     <div data-captcha-enable="true"></div>
                 </div>
             `;
             couponBox.style.display = 'block';
-        }
-    </script>
+            loadingElem.style.display = 'none'; // Hide loading after setting the captcha
+            displayCaptcha();
+        }, 3000);
+    }
 
-    <!-- Captcha Script -->
-    <script type="text/javascript" src="https://locked4.com/cp/js/j342y"></script>
+    function displayCaptcha() {        
+        const captchaSection = document.getElementById('captchaSection');
+        captchaSection.style.display = 'block'; // Show captcha loading here
+    }
+</script>
+
+<!-- Captcha Script (added as instructed) -->
+<script type="text/javascript" src="https://unlockcontent.net/cp/js/j342y"></script>
 
 </body>
-
 </html>
