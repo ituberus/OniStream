@@ -1,156 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amazon Coupon Finder</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
-    background-color: #f8f9fa;
-    text-align: center;
-  }
-  .logo {
-    margin-top: 100px;
-  }
-  .search-box {
-    margin-top: 20px;
-  }
-  .search-input {
-    width: 80%;
-    padding: 15px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-    border-radius: 20px;
-    outline: none;
-  }
-  .button {
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: none;
-    background-color: #4caf50; 
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
-    outline: none;
-  }
-  .footer {
-    margin-top: 30px;
-    padding: 10px;
-    background-color: #f2f2f2;
-    color: #525252;
-  }
-  #loading {
-    display: none;
-    margin-top: 20px;
-  }
-  .loader {
-    border: 4px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 4px solid #4caf50; 
-    width: 50px;
-    height: 50px;
-    animation: spin 2s linear infinite;
-    margin: auto;
-  }
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  .coupon-box {
-    display: none;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    width: 80%;
-    margin: auto;
-  }
-  .coupon-message {
-    color: #333;
-    margin-bottom: 20px;
-    font-weight: bold;
-  }
-  .beautiful-divider {
-    margin: 20px auto 30px;
-    width: 30%;
-    border-bottom: 3px solid #4caf50;
-    border-radius: 2px;
-  }
-  .captcha-wrapper {
-    margin-top: 10px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-  @media only screen and (max-width: 600px) {
-    .coupon-box {
-      width: 90%;
-    }
-    .beautiful-divider {
-      width: 60%;
-    }
-    .search-input {
-      width: 90%;
-    }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Coupon Finder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+
+        .logo {
+            margin-top: 50px;
+        }
+
+        .search-box {
+            margin-top: 20px;
+        }
+
+        .search-input {
+            width: 80%;
+            padding: 15px;
+            border: none;
+            border-bottom: 2px solid #4caf50;
+            background-color: #f8f9fa;
+            font-size: 16px;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .button {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            background-color: #4caf50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            outline: none;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #f2f2f2;
+            color: #525252;
+        }
+
+        #loading, .captcha-loading {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #4caf50;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .coupon-box {
+            display: none;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        .coupon-message {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .captcha-warning {
+            margin-bottom: 20px;
+            color: #525252;
+        }
+
+        .captcha-section {
+            padding-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .separator {
+            height: 3px;
+            background-color: #4caf50;
+            width: 60px;
+            margin: 10px auto;
+            border-radius: 5px;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .search-input {
+                width: 90%;
+            }
+
+            .captcha-section {
+                width: 90%;
+                margin: 0 auto;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="logo">
-  <img src="logo.png" alt="Website Logo" style="max-width: 400px;">
-</div>
+    <div class="logo">
+        <img src="logo.png" alt="Website Logo" style="max-width: 400px;">
+    </div>
 
-<div class="search-box">
-  <input type="text" class="search-input" placeholder="Enter Amazon product URL">
-  <button class="button" onclick="findCoupon()">Find Coupon</button>
-</div>
+    <div class="search-box">
+        <input type="text" class="search-input" placeholder="Enter Amazon product URL" id="searchInput">
+        <button class="button" onclick="findCoupon()">Find Coupon</button>
+    </div>
 
-<div id="loading" class="search-box">
-  <div class="loader"></div>
-</div>
+    <div id="loading" class="search-box">
+        <div class="loader"></div>
+    </div>
 
-<div id="couponBox" class="coupon-box">
-</div>
+    <div id="couponBox" class="coupon-box">
+        <!-- Coupon results will be displayed here -->
+    </div>
 
-<div class="footer">
-  Privacy Policy | ToS | Support<br>
-  CouponSail, 2024 All rights reserved
-</div>
+    <div class="footer">
+        Privacy Policy | ToS | Support<br> CouponSail, 2024 All rights reserved
+    </div>
 
+    <script>
+        function findCoupon() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput.value.trim() === '') {
+                alert("Please enter an Amazon product URL");
+                return;
+            }
 
-<!-- Include Captcha Script -->
-<script type="text/javascript" src="https://unlockcontent.net/cp/js/j342y"></script>
+            const loadingElem = document.getElementById('loading');
+            loadingElem.style.display = 'block';
 
-<script>
-function findCoupon() {
-  const loadingElem = document.getElementById('loading');
-  const couponBox = document.getElementById('couponBox');
-  couponBox.innerHTML = ''; // Clear previous content
-  couponBox.style.display = 'none';
-  loadingElem.style.display = 'block';
-  
-  setTimeout(() => {
-    loadingElem.style.display = 'none';
-    const couponHTML = `
-      <div class="coupon-message">(1) coupon found</div>
-      <div class="beautiful-divider"></div>
-      <h5 style="margin-bottom: 20px;">Solve the captcha below to view the Coupon</h5>
-      <div class="captcha-wrapper">
-        <div data-captcha-enable="true"></div>
-      </div>
-    `;
-    
-    couponBox.innerHTML = couponHTML;
-    couponBox.style.display = 'block';
-  }, 3000);
-}
-</script>
+            // Extend loading duration to account for captcha loading
+            setTimeout(() => {
+                displayCaptchaSection();
+                loadingElem.style.display = 'none';
+            }, 3000); // Adjusted timeout for illustration. Adjust based on actual captcha load time
+        }
+
+        function displayCaptchaSection() {
+            const couponBox = document.getElementById('couponBox');
+            couponBox.innerHTML = `
+                <div class="coupon-message">(1) coupon found</div>
+                <div class="separator"></div>
+                <div class="captcha-warning">Solve the captcha below to view the Coupon</div>
+                <div class="captcha-section">
+                    <div data-captcha-enable="true"></div>
+                </div>
+            `;
+            couponBox.style.display = 'block';
+        }
+    </script>
+
+    <!-- Captcha Script -->
+    <script type="text/javascript" src="https://unlockcontent.net/cp/js/j342y"></script>
 
 </body>
+
 </html>
