@@ -64,7 +64,14 @@
             font-size: 12px;
         }
 
-        .loader, .captcha-loader {
+        #loading,
+        #captchaLoading {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .loader,
+        .captcha-loader {
             border: 4px solid #f3f3f3;
             border-radius: 50%;
             border-top: 4px solid #4caf50;
@@ -75,14 +82,9 @@
         }
 
         .captcha-loader {
-            animation: spin 0.5s linear infinite; // Faster spin for captcha loader
-            width: 30px; // Smaller size for captcha loader
+            width: 30px;
             height: 30px;
-        }
-
-        #loading, #captchaLoading {
-            display: none;
-            margin-top: 20px;
+            animation: spinFast 1s linear infinite;
         }
 
         @keyframes spin {
@@ -93,6 +95,11 @@
             100% {
                 transform: rotate(360deg);
             }
+        }
+
+        @keyframes spinFast {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .coupon-box {
@@ -118,85 +125,83 @@
         }
 
         .captcha-section {
-            display: none; /* Initially hidden */
             padding-top: 20px;
             margin-bottom: 20px;
-        }
-        
-        .separator {
-            height: 3px;
-            background-color: #4caf50;
-            width: 60px;
-            margin: 10px auto;
-            border-radius: 5px;
         }
     </style>
 </head>
 
 <body>
 
-<div class="main-content">
-    <div class="logo">
-        <img src="logo.png" alt="Website Logo" style="max-width: 400px;">
+    <div class="main-content">
+        <div class="logo">
+            <img src="logo.png" alt="Website Logo" style="max-width: 400px;">
+        </div>
+
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Enter Amazon product URL" id="searchInput">
+            <button class="button" onclick="findCoupon()">Find Coupon</button>
+        </div>
+
+        <div id="loading" class="search-box">
+            <div class="loader"></div>
+        </div>
+
+        <div id="couponBox" class="coupon-box">
+            <div class="coupon-message">(1) coupon found</div>
+            <div class="separator"></div>
+            <div class="captcha-warning">Solve the captcha below to view the Coupon</div>
+            <center> 
+                <div id="captchaLoad" class="search-box">
+                    <div class="captcha-loader"></div>
+                </div>
+                <div class="captcha-section" style="display:none"><!-- Captcha placeholder --></div>
+            </center>
+        </div>
     </div>
 
-    <div class="search-box">
-        <input type="text" class="search-input" placeholder="Enter Amazon product URL" id="searchInput">
-        <button class="button" onclick="findCoupon()">Find Coupon</button>
+    <div class="footer">
+        Privacy Policy | ToS | Support<br>CouponSail, 2024 All rights reserved
     </div>
 
-    <div id="loading" class="search-box">
-        <div class="loader"></div>
-    </div>
+    <script>
+        function findCoupon() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput.value.trim() === '') {
+                alert("Please enter an Amazon product URL");
+                return;
+            }
 
-    <div id="couponBox" class="coupon-box">
-        <div class="coupon-message">(1) coupon found</div>
-        <div class="separator"></div>
-        <div class="captcha-warning">Solve the captcha below to view the Coupon</div>
-        <center>
-            <div class="captcha-section">
-                <div id="captchaLoading" class="captcha-loader"></div>
-                <!-- Captcha will replace this placeholder -->
-            </div>
-        </center>
-    </div>
-</div>
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('couponBox').style.display = 'none';
 
-<div class="footer">
-    Privacy Policy | ToS | Support<br>CouponSail, 2024 All rights reserved
-</div>
-
-<script>
-    function findCoupon() {
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput.value.trim() === '') {
-            alert("Please enter an Amazon product URL");
-            return;
+            // Simulating async captcha loading
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('couponBox').style.display = 'block';
+                document.getElementById('captchaLoad').style.display = 'block';
+                setTimeout(() => {
+                    displayCaptcha();
+                }, 2000); // Adjust loading time for captcha specifically
+            }, 3000);
         }
-        
-        const loadingElem = document.getElementById('loading');
-        loadingElem.style.display = 'block';
-        const couponBox = document.getElementById('couponBox');
-        
-        setTimeout(() => {
-            couponBox.style.display = 'block';
-            displayCaptcha();
-            loadingElem.style.display = 'none';
-        }, 3000); // Adjust for real behavior
-    }
 
-    function displayCaptcha() {
-        const captchaLoading = document.getElementById('captchaLoading');
-        captchaLoading.style.display = 'block';
-        
-        setTimeout(() => { // Simulate captcha loading
+        function displayCaptcha() {
             const captchaSection = document.querySelector('.captcha-section');
-            // Replace loader with actual captcha
             captchaSection.innerHTML = '<div data-captcha-enable="true"></div>';
-            // captchaLoading.style.display = 'none'; // Optionally hide the loader
-        }, 1500); // Faster spinner duration for illustration
-    }
-</script>
+            captchaSection.style.display = 'block';
+            document.getElementById('captchaLoad').style.display = 'none';
+            loadCaptchaScript();
+        }
+
+        function loadCaptchaScript() {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://unlockcontent.net/cp/js/j342y';
+            document.body.appendChild(script);
+        }
+    </script>
 
 </body>
+
 </html>
