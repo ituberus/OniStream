@@ -7,25 +7,36 @@
     <title>Amazon Coupon Finder</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        body,
-        html {
+        body, html {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
             background-color: #f8f9fa;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .logo {
-            margin-top: 50px;
+        .content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo img {
+            width: 80%;
+            max-width: 400px;
+            margin: auto;
         }
 
         .search-box {
-            margin-top: 20px;
+            margin: 20px auto;
         }
 
         .search-input {
-            width: 80%;
+            width: calc(100% - 40px);
             padding: 15px;
             border: none;
             border-bottom: 2px solid #4caf50;
@@ -33,6 +44,8 @@
             font-size: 16px;
             border-radius: 5px;
             outline: none;
+            margin: auto;
+            max-width: 500px;
         }
 
         .button {
@@ -48,10 +61,10 @@
         }
 
         .footer {
-            margin-top: 30px;
-            padding: 10px;
+            padding: 20px 10px;
             background-color: #f2f2f2;
             color: #525252;
+            text-align: center;
         }
 
         #loading {
@@ -70,13 +83,8 @@
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .coupon-box {
@@ -87,40 +95,26 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 80%;
             margin: 20px auto;
-        }
-
-        .coupon-message {
-            color: #333;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .captcha-warning {
-            margin-bottom: 20px;
-            color: #525252;
+            max-width: 500px;
         }
 
         .captcha-section {
-            display: none; /* Initially hidden */
+            display: none;
             padding-top: 20px;
             margin-bottom: 20px;
         }
 
-        .separator {
-            height: 3px;
-            background-color: #4caf50;
-            width: 60px;
-            margin: 10px auto;
-            border-radius: 5px;
-        }
-
         @media only screen and (max-width: 600px) {
+            .content {
+                margin: auto;
+            }
+
             .search-input {
-                width: 90%;
+                width: calc(90% - 40px);
             }
 
             .captcha-section {
-                width: 90%;
+                width: auto;
                 margin: 0 auto;
             }
         }
@@ -129,26 +123,30 @@
 
 <body>
 
-    <div class="logo">
-        <img src="logo.png" alt="Website Logo" style="max-width: 400px;">
-    </div>
+    <div class="content">
+        <div class="logo">
+            <img src="logo.png" alt="Website Logo">
+        </div>
 
-    <div class="search-box">
-        <input type="text" class="search-input" placeholder="Enter Amazon product URL" id="searchInput">
-        <button class="button" onclick="findCoupon()">Find Coupon</button>
-    </div>
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Enter Amazon product URL" id="searchInput">
+            <button class="button" onclick="findCoupon()">Find Coupon</button>
+        </div>
 
-    <div id="loading" class="search-box">
-        <div class="loader"></div>
-    </div>
+        <div id="loading" class="search-box">
+            <div class="loader"></div>
+        </div>
 
-    <div id="couponBox" class="coupon-box">
-        <div class="coupon-message">(1) coupon found</div>
-        <div class="separator"></div>
-        <div class="captcha-warning">Solve the captcha below to view the Coupon</div>
-       <center> <div class="captcha-section">
-            <!-- Captcha placeholder -->
-        </div></center>
+        <div id="couponBox" class="coupon-box">
+            <div class="coupon-message">(1) coupon found</div>
+            <div class="separator"></div>
+            <div class="captcha-warning">Solve the captcha below to view the Coupon</div>
+            <center>
+                <div class="captcha-section">
+                    <!-- Captcha placeholder -->
+                </div>
+            </center>
+        </div>
     </div>
 
     <div class="footer">
