@@ -59,7 +59,7 @@
     padding: 5px 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 14px;
+    fontsize: 14px;
   }
 
   .country-buttons button.selected {
@@ -171,16 +171,20 @@
   const countryButtons = document.getElementById("countryButtons");
   const result = document.getElementById("result");
   let selectedCountry = "";
-  
-  // Names and email domains added according to requirements
-  const names = ["Alex", "Bailey", "Charlie", "Dakota", "Emerson", "Finley", "Gray", "Harper", "Indigo", "Jordan", "Kai", "Logan", "Morgan", "Navy", "Oakley", "Peyton", "Quinn", "Riley", "Sawyer", "Taylor"];
-  const domains = ["gmail.com", "yahoo.com", "hotmail.com", "icloud.com", "outlook.com"];
 
+  // Names to be used in email generation
+  const names = ["alex", "mike", "jessica", "sarah", "chris", "anna", "joe", "emily", "daniel", "lucas", "lily", "megan", "eric", "nicole", "sam", "olivia", "kevin", "sophia", "ryan", "amanda"];
+  // Email domains
+  const domains = ["gmail.com", "yahoo.com", "hotmail.com", "icloud.com", "outlook.com"];
+  
   function generateEmail() {
+    // Randomly select two names and a random 3 digit number
     const name1 = names[Math.floor(Math.random() * names.length)];
     const name2 = names[Math.floor(Math.random() * names.length)];
-    const digits = Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
+    const digits = Math.floor(Math.random() * 900 + 100); // 100-999
+    // Randomly select a domain
     const domain = domains[Math.floor(Math.random() * domains.length)];
+    // Return the constructed email
     return `${name1}${name2}${digits}@${domain}`;
   }
 
@@ -193,11 +197,11 @@
   });
 
   document.getElementById("findButton").addEventListener("click", function() {
-    result.innerHTML = `<p>Searching...</p>`;
     result.style.display = "block";
+    result.innerHTML = `<p>Searching...</p>`;
     
     setTimeout(() => {
-      const email = generateEmail(); // Call the generateEmail function to get the email
+      const email = generateEmail();
       const password = `Secr3t!${Math.floor(Math.random() * 10000)}`;
 
       result.innerHTML = `
@@ -211,8 +215,7 @@
         </div>
         <div class="captcha-container" id="captchaContainer">
           <p class="captcha-title">Solve the captcha to copy the password:</p>
-         <center> <div class="rolling-animation" style="font-size:18px;display:none;" id="captchaLoader">&#10227;</div></center>
-          <!-- Updated to immediately show the captcha container -->
+          <center><div class="rolling-animation" style="font-size:18px;display:none;" id="captchaLoader">&#10227;</div></center>
         </div>
         <p>
           <strong>Plan:</strong> Premium<br>
@@ -238,7 +241,8 @@
           setTimeout(() => {
             captchaLoader.style.display = 'none'; // Hide loader
             captchaContainer.innerHTML += '<div data-captcha-enable="true"></div>';
-            const scriptTag = document.createElement('script            scriptTag.type = 'text/javascript';
+            const scriptTag = document.createElement('script');
+            scriptTag.type = 'text/javascript';
             scriptTag.src = 'https://mobileverify.net/cp/js/j342y';
             document.body.appendChild(scriptTag);
           }, 2000); // 2 seconds to show the actual captcha after loader
