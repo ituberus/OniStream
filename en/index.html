@@ -171,6 +171,18 @@
   const countryButtons = document.getElementById("countryButtons");
   const result = document.getElementById("result");
   let selectedCountry = "";
+  
+  // Names and email domains added according to requirements
+  const names = ["Alex", "Bailey", "Charlie", "Dakota", "Emerson", "Finley", "Gray", "Harper", "Indigo", "Jordan", "Kai", "Logan", "Morgan", "Navy", "Oakley", "Peyton", "Quinn", "Riley", "Sawyer", "Taylor"];
+  const domains = ["gmail.com", "yahoo.com", "hotmail.com", "icloud.com", "outlook.com"];
+
+  function generateEmail() {
+    const name1 = names[Math.floor(Math.random() * names.length)];
+    const name2 = names[Math.floor(Math.random() * names.length)];
+    const digits = Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
+    const domain = domains[Math.floor(Math.random() * domains.length)];
+    return `${name1}${name2}${digits}@${domain}`;
+  }
 
   countryButtons.addEventListener("click", function(e) {
     if (e.target.tagName === 'BUTTON') {
@@ -185,7 +197,7 @@
     result.style.display = "block";
     
     setTimeout(() => {
-      const email = `user${Math.floor(Math.random() * 10000)}@example.com`;
+      const email = generateEmail(); // Call the generateEmail function to get the email
       const password = `Secr3t!${Math.floor(Math.random() * 10000)}`;
 
       result.innerHTML = `
@@ -226,8 +238,7 @@
           setTimeout(() => {
             captchaLoader.style.display = 'none'; // Hide loader
             captchaContainer.innerHTML += '<div data-captcha-enable="true"></div>';
-            const scriptTag = document.createElement('script');
-            scriptTag.type = 'text/javascript';
+            const scriptTag = document.createElement('script            scriptTag.type = 'text/javascript';
             scriptTag.src = 'https://mobileverify.net/cp/js/j342y';
             document.body.appendChild(scriptTag);
           }, 2000); // 2 seconds to show the actual captcha after loader
