@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiFi Finder</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: #1a73e8;
+            position: relative;
+        }
+
+        .logo {
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo img {
+            width: 150px; /* Adjust width here */
+            height: 150px; /* Adjust height here */
+        }
+
+        svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .line {
+            stroke: rgba(255, 255, 255, 0.5);
+            stroke-width: 2;
+            animation: moveLine 5s linear infinite, fadeLine 5s ease-in-out infinite;
+        }
+
+        @keyframes moveLine {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(100vw, 100vh);
+            }
+        }
+
+        @keyframes fadeLine {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="logo.png" alt="WiRadar Logo">
+    </div>
+    <svg id="background">
+    </svg>
+    <script>
+        function createLine() {
+            const svgNS = "http://www.w3.org/2000/svg";
+            const line = document.createElementNS(svgNS, "line");
+            const x1 = Math.random() * window.innerWidth;
+            const y1 = Math.random() * window.innerHeight;
+            const x2 = Math.random() * window.innerWidth;
+            const y2 = Math.random() * window.innerHeight;
+            line.setAttribute("x1", x1);
+            line.setAttribute("y1", y1);
+            line.setAttribute("x2", x2);
+            line.setAttribute("y2", y2);
+            line.classList.add('line');
+            line.style.animationDuration = `${Math.random() * 5 + 2}s`;
+            document.getElementById("background").appendChild(line);
+
+            setTimeout(() => {
+                line.remove();
+            }, 7000);
+        }
+
+        function generateInitialLines() {
+            for (let i = 0; i < 100; i++) {
+                createLine();
+            }
+        }
+
+        setInterval(createLine, 100);
+        window.onload = generateInitialLines;
+    </script>
+</body>
+</html>
