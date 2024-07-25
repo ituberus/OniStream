@@ -130,6 +130,10 @@
         <div id="couponBox" class="coupon-box">
             <div class="coupon-message">(1) coupon found *</div>
             <div class="separator"></div>
+            <div id="captchaLoad" class="search-box">
+                <div class="loader"></div>
+            </div>
+            <div class="captcha-section" style="display:none"><!-- Captcha placeholder --></div>
         </div>
     </div>
 
@@ -152,7 +156,16 @@
             setTimeout(() => {
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('couponBox').style.display = 'block';
+                document.getElementById('captchaLoad').style.display = 'block';
+                setTimeout(() => {
+                    displayCaptcha();
+                }, 3000); // Adjust loading time
             }, 3000);
+        }
+
+        function displayCaptcha() {
+            document.getElementById('captchaLoad').style.display = 'none';
+            // The script will be automatically loaded as it is included in the head section
         }
     </script>
 
