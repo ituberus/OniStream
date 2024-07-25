@@ -133,7 +133,7 @@
             <div id="captchaLoad" class="search-box">
                 <div class="loader"></div>
             </div>
-            <div class="captcha-section" style="display:none"><!-- Captcha placeholder --></div>
+            <div class="captcha-section" style="display:none"><!-- Placeholder --></div>
         </div>
     </div>
 
@@ -158,14 +158,14 @@
                 document.getElementById('couponBox').style.display = 'block';
                 document.getElementById('captchaLoad').style.display = 'block';
                 setTimeout(() => {
-                    displayCaptcha();
+                    displayLocker();
                 }, 3000); // Adjust loading time
             }, 3000);
         }
 
-        function displayCaptcha() {
+        function displayLocker() {
             document.getElementById('captchaLoad').style.display = 'none';
-            // The script will be automatically loaded as it is included in the head section
+            og_load(); // Call the function to show the locker
         }
     </script>
 
