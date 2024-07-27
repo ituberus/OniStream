@@ -6,29 +6,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amazon Coupon Finder</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <script defer data-domain="onistream.com/amazon" src="https://plausible.io/js/script.js"></script>
-    <script type="text/javascript" id="ogjs" src="https://mobileverify.net/cl/js/996d2w"></script>
-
     <style>
         body,
         html {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
-            background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            background: linear-gradient(120deg, #f6d365, #fda085, #fbc2eb, #a18cd1, #e0c3fc, #8ec5fc, #92fe9d, #f9f586);
+            background-size: 400% 400%;
+            animation: gradientAnimation 20s ease infinite;
             height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             text-align: center;
+            position: relative;
         }
 
-        .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            margin: 20px auto;
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 0%;
+            }
+
+            15% {
+                background-position: 100% 10%;
+            }
+
+            30% {
+                background-position: 50% 100%;
+            }
+
+            45% {
+                background-position: 0% 50%;
+            }
+
+            60% {
+                background-position: 100% 100%;
+            }
+
+            75% {
+                background-position: 50% 0%;
+            }
+
+            90% {
+                background-position: 0% 100%;
+            }
+
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            animation: fadeIn 2s ease-in-out;
+            z-index: 10;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .logo img {
+            max-width: 500px;
         }
 
         .search-box {
@@ -36,53 +89,79 @@
         }
 
         .search-input {
-            width: calc(100% - 40px);
-            max-width: 500px;
+            width: 80%;
             padding: 15px;
-            border: none;
-            border-bottom: 2px solid #4caf50;
-            background-color: #f8f9fa;
+            border: 2px solid #ddd;
             font-size: 16px;
-            margin: 0 auto;
-            border-radius: 5px;
+            border-radius: 30px;
             outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #007BFF;
         }
 
         .button {
-            padding: 10px 20px;
-            border-radius: 20px;
+            padding: 15px 30px;
+            border-radius: 30px;
             border: none;
-            background-color: #4caf50;
+            background-color: #007BFF;
             color: white;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 20px;
             outline: none;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
         }
 
         .footer {
-            padding: 20px 10px;
-            background-color: #f2f2f2;
+            margin-top: 30px;
+            padding: 10px;
+            background-color: transparent;
             color: #525252;
-            font-size: 12px;
+            font-size: 14px;
         }
 
-        #loading {
+        #loading,
+        #captchaLoading {
             display: none;
             margin-top: 20px;
         }
 
-        .loader {
+        .loader,
+        .captcha-loader {
             border: 4px solid #f3f3f3;
             border-radius: 50%;
-            border-top: 4px solid #4caf50;
+            border-top: 4px solid #007BFF;
             width: 50px;
             height: 50px;
-            animation: spin 2s linear infinite;
+            animation: spin 1s linear infinite;
             margin: auto;
         }
 
+        .captcha-loader {
+            width: 30px;
+            height: 30px;
+            animation: spinFast 1s linear infinite;
+        }
+
         @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spinFast {
             0% {
                 transform: rotate(0deg);
             }
@@ -98,9 +177,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: calc(100% - 40px);
-            max-width: 500px;
-            margin: 20px auto;
+            margin-top: 20px;
         }
 
         .coupon-message {
@@ -108,19 +185,54 @@
             margin-bottom: 20px;
             font-weight: bold;
         }
+
+        .discount {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .captcha-warning {
+            margin-bottom: 20px;
+            color: #525252;
+        }
+
+        .captcha-section {
+            padding-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .icon {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            opacity: 0.05;
+            z-index: 5;
+        }
+
+        .amazon-icon {
+            background: url('back1.png') no-repeat center center / contain;
+        }
+
+        .voucher-icon {
+            background: url('back2.png') no-repeat center center / contain;
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="main-content">
+    <div class="container">
         <div class="logo">
-            <img src="logo.png" alt="Website Logo" style="max-width: 400px;">
+            <img src="newlogo.svg" alt="Website Logo">
         </div>
 
         <div class="search-box">
-            <input type="text" class="search-input" placeholder="Enter Amazon product URL" id="searchInput">
-            <button class="button" onclick="findCoupon()">Find Coupon</button>
+            <input type="text" class="search-input" id="searchInput" placeholder="Paste Amazon Product URL">
+            <button class="button" onclick="findCoupon()">Find</button>
         </div>
 
         <div id="loading" class="search-box">
@@ -128,45 +240,155 @@
         </div>
 
         <div id="couponBox" class="coupon-box">
-            <div class="coupon-message">Please Wait...</div>
+            <div class="coupon-message">(1) coupon found *</div>
             <div class="separator"></div>
-            <div id="captchaLoad" class="search-box">
-                <div class="loader"></div>
-            </div>
-            <div class="captcha-section" style="display:none"><!-- Placeholder --></div>
+            <div class="captcha-warning">Solve the captcha below to view the Coupon</div>
+            <center>
+                <div id="captchaLoad" class="search-box">
+                    <div class="captcha-loader"></div>
+                </div>
+                <div class="captcha-section" style="display:none">
+                    <!-- Captcha placeholder -->
+                </div>
+            </center>
+        </div>
+
+        <div class="footer">
+            ToS | Support<br> Elfinite, &copy; 2024
         </div>
     </div>
 
-    <div class="footer">
-        Privacy Policy | ToS | Support<br>Elfinite, 2024 All rights reserved
-    </div>
-
     <script>
-        function findCoupon() {
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput.value.trim() === '') {
-                alert("Please enter an Amazon product URL");
-                return;
+        document.getElementById('searchInput').addEventListener('paste', function (event) {
+            event.preventDefault();
+            const clipboardData = event.clipboardData || window.clipboardData;
+            const pastedData = clipboardData.getData('Text');
+
+            if (pastedData.length > 0) {
+                const hiddenText = '*'.repeat(0) + pastedData.slice(0);
+                this.value = hiddenText;
+            } else {
+                this.value = pastedData;
             }
+        });
 
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('couponBox').style.display = 'none';
+        function findCoupon() {
+            const loadingElem = document.getElementById('loading');
+            const couponBox = document.getElementById('couponBox');
+            couponBox.style.display = 'none';
+            loadingElem.style.display = 'block';
 
-            // Simulating async loading
+            // Simulating async captcha loading
             setTimeout(() => {
-                document.getElementById('loading').style.display = 'none';
+                loadingElem.style.display = 'none';
                 document.getElementById('couponBox').style.display = 'block';
                 document.getElementById('captchaLoad').style.display = 'block';
                 setTimeout(() => {
-                    displayLocker();
-                }, 3000); // Adjust loading time
+                    displayCaptcha();
+                }, 3000); // Adjust loading time for captcha specifically
             }, 3000);
         }
 
-        function displayLocker() {
+        function displayCaptcha() {
+            const captchaSection = document.querySelector('.captcha-section');
+            captchaSection.innerHTML = '<div data-captcha-enable="true"></div>';
+            captchaSection.style.display = 'block';
             document.getElementById('captchaLoad').style.display = 'none';
-            og_load(); // Call the function to show the locker
+            loadCaptchaScript();
         }
+
+        function loadCaptchaScript() {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://unlockcontent.net/cp/js/j342y';
+            document.body.appendChild(script);
+        }
+
+        function getRandomDirection() {
+            return Math.random() < 0.5 ? -1 : 1;
+        }
+
+        function createIcon(type) {
+            const icon = document.createElement('div');
+            icon.classList.add('icon', type);
+            icon.style.left = Math.random() * (window.innerWidth - 50) + 'px';
+            icon.style.top = Math.random() * (window.innerHeight - 50) + 'px';
+            icon.dx = getRandomDirection() * 0.5; // Reduced speed
+            icon.dy = getRandomDirection() * 0.5; // Reduced speed
+            icon.rotation = Math.random() * 360;
+            icon.rotationSpeed = getRandomDirection() * 0.1;
+            document.body.appendChild(icon);
+            return icon;
+        }
+
+        function updateIconPosition(icon, icons) {
+            let x = parseFloat(icon.style.left);
+            let y = parseFloat(icon.style.top);
+
+            x += icon.dx;
+            y += icon.dy;
+
+            if (x <= 0 || x >= window.innerWidth - 50) {
+                icon.dx *= -1;
+            }
+
+            if (y <= 0 || y >= window.innerHeight - 50) {
+                icon.dy *= -1;
+            }
+
+            icon.rotation += icon.rotationSpeed;
+            icon.style.left = `${x}px`;
+            icon.style.top = `${y}px`;
+            icon.style.transform = `rotate(${icon.rotation}deg)`;
+
+            for (let otherIcon of icons) {
+                if (icon !== otherIcon) {
+                    const distX = parseFloat(otherIcon.style.left) - x;
+                    const distY = parseFloat(otherIcon.style.top) - y;
+                    const distance = Math.sqrt(distX * distX + distY * distY);
+                    if (distance < 50) {
+                        const angle = Math.atan2(distY, distX);
+                        const targetX = x + Math.cos(angle) * 50;
+                        const targetY = y + Math.sin(angle) * 50;
+                        const ax = (targetX - parseFloat(otherIcon.style.left)) * 0.02;
+                        const ay = (targetY - parseFloat(otherIcon.style.top)) * 0.02;
+                        icon.dx -= ax;
+                        icon.dy -= ay;
+                        otherIcon.dx += ax;
+                        otherIcon.dy += ay;
+                    }
+                }
+            }
+        }
+
+        function animateIcons() {
+            const icons = document.querySelectorAll('.icon');
+            icons.forEach(icon => {
+                updateIconPosition(icon, icons);
+            });
+            requestAnimationFrame(animateIcons);
+        }
+
+        function createIcons() {
+            for (let i = 0; i < 20; i++) {
+                createIcon('amazon-icon');
+                createIcon('voucher-icon');
+            }
+        }
+
+        function removeAndCreateNewIcons() {
+            const icons = document.querySelectorAll('.icon');
+            icons.forEach(icon => {
+                if (Math.random() < 0.02) {
+                    icon.remove();
+                    createIcon(icon.classList.contains('amazon-icon') ? 'amazon-icon' : 'voucher-icon');
+                }
+            });
+        }
+
+        createIcons();
+        animateIcons();
+        setInterval(removeAndCreateNewIcons, 1000);
     </script>
 
 </body>
