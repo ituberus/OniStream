@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclusive Coupons</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+        }
+		
+		.header-icon {
+    max-width: 25px; /* Adjust this size as needed */
+    height: auto; /* Maintains aspect ratio */
+    margin-right: 10px; /* Space between the image and text */
+    vertical-align: middle; /* Aligns the image with the text */
+}
+
+
+        .background-animation {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            animation: float 5s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+            100% { transform: translateY(0); }
+        }
+
+        .header {
+            width: 100%;
+            background: linear-gradient(90deg, #4A90E2, #5CC9F5);
+            text-align: center;
+            color: white;
+            padding: 15px 0;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 80px auto;
+            position: relative;
+            z-index: 1;
+            padding: 0 15px;
+        }
+
+        .coupon-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: box-shadow 0.3s, transform 0.3s;
+            position: relative;
+            padding-right: 80px;
+            overflow: hidden;
+        }
+
+        .coupon-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .badge {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background-color: #FF5F6D;
+            color: white;
+            font-weight: bold;
+            font-size: 1em;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transform: rotate(-5deg);
+            box-shadow: 0 3px 6px rgba(255, 95, 109, 0.4);
+        }
+
+        .coupon-info {
+            margin-left: 80px;
+            flex: 1;
+        }
+
+        .code-label {
+            color: #4A90E2;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .status {
+            color: green;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+        .offer-title {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .usage-info, .coupon-left {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 2px;
+        }
+
+        .icon {
+            width: 60px;
+            height: 60px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            left: 10px;
+        }
+
+        .icon img {
+            width: 40px;
+        }
+
+        .view-button {
+            background: linear-gradient(90deg, #4A90E2, #5CC9F5);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 0.9em;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .view-button:hover {
+            background: linear-gradient(90deg, #357ABD, #5CC9F5);
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .view-button i {
+            margin-left: 5px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding-top: 60px;
+            animation: fadeIn 0.5s;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-header {
+            font-size: 2em;
+            color: #4A90E2;
+            margin-bottom: 10px;
+        }
+
+        .platform-name {
+            font-size: 1.2em;
+            color: #333;
+            margin: 10px 0;
+            font-weight: bold; /* Bold text */
+        }
+
+        .discount-percentage {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #FF5F6D;
+            margin: 20px 0;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            display: inline-block;
+            letter-spacing: 2px;
+        }
+
+        .coupon-code {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin: 20px 0;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            display: inline-block;
+            letter-spacing: 2px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .redeem-button {
+            background: linear-gradient(90deg, #FF5F6D, #FF7C7C);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+
+        .redeem-button:hover {
+            background: linear-gradient(90deg, #FF3B3B, #FF5F6D);
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading {
+            display: none;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+
+        .loading:before {
+            content: '';
+            border: 5px solid #f3f3f3; /* Light gray */
+            border-top: 5px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Centering captcha */
+        .captcha-message {
+            text-align: center;
+            margin-top: 20px;
+            display: none; /* Initially hidden */
+        }
+
+        .captcha-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .captcha-instruction {
+            display: none;
+            position: absolute;
+            top: 1%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: red;
+        }
+
+        /* Media Queries for Responsive Design */
+        @media (max-width: 768px) {
+            .coupon-card {
+                padding-right: 60px;
+            }
+            .icon {
+                width: 50px;
+                height: 50px;
+            }
+            .view-button {
+                padding: 8px 12px;
+                font-size: 0.8em;
+            }
+            .badge {
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="background-animation">
+    <script>
+        for (let i = 0; i < 100; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.width = Math.random() * 15 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.top = Math.random() * 100 + 'vh';
+            particle.style.animationDuration = Math.random() * 2 + 3 + 's';
+            particle.style.opacity = Math.random() * 0.7 + 0.3; // More visible particles
+            document.querySelector('.background-animation').appendChild(particle);
+            particle.animate([
+                { transform: 'translateY(0)' },
+                { transform: 'translateY(-30px)' }
+            ], {
+                duration: 5000,
+                iterations: Infinity,
+                easing: 'ease-in-out',
+                direction: 'alternate'
+            });
+        }
+    </script>
+</div>
+
+<div class="header">
+    <img src="logo.png" class="header-icon" alt="DoorDash Logo"> Exclusive Coupons
+    <i class="fas fa-bars" style="float: right;"></i> <!-- Placeholder for menu icon -->
+</div>
+
+
+<div class="container">
+
+    <!-- Coupon 1 -->
+    <div class="coupon-card" data-platform="Platform A" data-discount="-50%">
+        <div class="badge">-50%</div>
+        <div class="icon"><img src="doordash.png" alt="Logo"></div>
+        <div class="coupon-info">
+            <div class="code-label">CODE <span class="status"><i class="fas fa-check-circle"></i>Verified</span></div>
+            <div class="offer-title">Save Up To 50% On All Your Orders</div>
+            <div class="usage-info">94 People Used</div>
+            <div class="coupon-left">5 Coupons Left</div>
+        </div>
+        <button class="view-button">View Coupon <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- Coupon 2 -->
+    <div class="coupon-card" data-platform="Platform B" data-discount="-40%">
+        <div class="badge">-40%</div>
+        <div class="icon"><img src="ubereats.png" alt="Logo"></div>
+        <div class="coupon-info">
+            <div class="code-label">CODE <span class="status"><i class="fas fa-check-circle"></i>Verified</span></div>
+            <div class="offer-title">Take 40% Off Your First Order</div>
+            <div class="usage-info">26 People Used</div>
+            <div class="coupon-left">12 Coupons Left</div>
+        </div>
+        <button class="view-button">View Coupon <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- Coupon 3 -->
+    <div class="coupon-card" data-platform="Platform C" data-discount="-50%">
+        <div class="badge">-50%</div>
+        <div class="icon"><img src="https://via.placeholder.com/40" alt="Logo"></div>
+        <div class="coupon-info">
+            <div class="code-label">CODE <span class="status"><i class="fas fa-check-circle"></i>Verified</span></div>
+            <div class="offer-title">Get 50% Off + Free Delivery</div>
+            <div class="usage-info">8 People Used</div>
+            <div class="coupon-left">20 Coupons Left</div>
+        </div>
+        <button class="view-button">View Coupon <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- Coupon 4 -->
+    <div class="coupon-card" data-platform="Platform D" data-discount="-$10">
+        <div class="badge">-$10</div>
+        <div class="icon"><img src="https://via.placeholder.com/40" alt="Logo"></div>
+        <div class="coupon-info">
+            <div class="code-label">CODE <span class="status"><i class="fas fa-check-circle"></i>Verified</span></div>
+            <div class="offer-title">Get $10 Off First Order</div>
+            <div class="usage-info">46 People Used</div>
+            <div class="coupon-left">7 Coupons Left</div>
+        </div>
+        <button class="view-button">View Coupon <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- Coupon 5 -->
+    <div class="coupon-card" data-platform="Platform E" data-discount="-75%">
+        <div class="badge">-75%</div>
+        <div class="icon"><img src="https://via.placeholder.com/40" alt="Logo"></div>
+        <div class="coupon-info">
+            <div class="code-label">CODE <span class="status"><i class="fas fa-check-circle"></i>Verified</span></div>
+            <div class="offer-title">Pick Your Favorites For Less</div>
+            <div class="usage-info">30 People Used</div>
+            <div class="coupon-left">9 Coupons Left</div>
+        </div>
+        <button class="view-button">View Coupon <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+</div>
+
+<!-- Modal Structure -->
+<div id="couponModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal-header">Your Discount</div>
+        <div class="discount-percentage"></div>
+        <div class="platform-name"></div>
+        <div class="coupon-code"></div>
+        <button class="redeem-button">Copy & Redeem <i class="fas fa-copy"></i></button>
+        <div class="loading"></div>
+        <div class="captcha-container">
+            <div class="captcha-message" data-captcha-enable="true">Please complete the captcha below:</div>
+            <center><div class="captcha-instruction">Proof you're not a Robot</div></center>
+        </div>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById("couponModal");
+    const closeButton = document.getElementsByClassName("close")[0];
+    const discountElement = document.querySelector(".discount-percentage");
+    const platformElement = document.querySelector(".platform-name");
+    const couponCodeElement = document.querySelector(".coupon-code");
+    const loadingElement = document.querySelector(".loading");
+    const captchaMessage = document.querySelector(".captcha-message");
+    const captchaInstruction = document.querySelector(".captcha-instruction");
+
+    document.querySelectorAll(".view-button").forEach(button => {
+        button.onclick = function() {
+            const couponCard = this.closest(".coupon-card");
+            const discount = couponCard.getAttribute("data-discount");
+            const platform = couponCard.getAttribute("data-platform");
+            const couponCode = generateCouponCode();
+
+            discountElement.textContent = discount;
+            platformElement.textContent = platform;
+            couponCodeElement.textContent = couponCode;
+
+            modal.style.display = "block";
+        };
+    });
+
+    closeButton.onclick = function() {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    function generateCouponCode() {
+        const code = Math.random().toString(36).substring(2, 9).toUpperCase(); // Generate code
+        return code.substring(0, 3) + '*****'; // Show first 3 characters
+    }
+
+    document.querySelector(".redeem-button").onclick = function() {
+        loadingElement.style.display = "block"; 
+        setTimeout(() => {
+            loadingElement.style.display = "none"; 
+            captchaMessage.style.display = "block"; 
+            captchaInstruction.style.display = "block"; // Show solve captcha text
+        }, 2000);
+    };
+</script>
+
+<script type="text/javascript" src="https://areyourealhuman.com/cp/js/j342y"></script>
+
+</body>
+</html>
