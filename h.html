@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashtag Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            text-align: center;
+        }
+        select, button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            font-size: 16px;
+        }
+        .hashtags {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hashtag Generator    https://easyupload.io/m/2tz8i3</h1>
+        <select id="service">
+            <option value="ubereats">Uber Eats</option>
+            <option value="doordash">DoorDash</option>
+        </select>
+        <button onclick="generateHashtags()">Generate Hashtags</button>
+        <div id="output" class="hashtags"></div>
+    </div>
+
+    <script>
+        function generateHashtags() {
+            const service = document.getElementById('service').value;
+            const viralHashtags = ['#ForYou', '#FYP', '#Trending', '#Viral', '#foryoupage'];
+            const foodHashtags = [
+                '#Foodie', '#Yum', '#Delicious', '#FoodLover', '#Tasty', '#Eats',
+                '#FoodPorn', '#InstaFood', '#Yummy', '#NomNom', '#FoodGasm', '#Hungry'
+            ];
+            const deliveryHashtags = [
+                '#FastDelivery', '#FoodDelivery', '#QuickEats',
+                '#DeliveryService', '#TakeOut', '#FoodToGo', '#SpeedyDelivery'
+            ];
+            const promoHashtags = ['#promo', '#promocode'];
+
+            let hashtags = ['#mcdonalds', '#coupon'];
+
+            if (service === 'ubereats') {
+                hashtags.push('#ubereats');
+            } else if (service === 'doordash') {
+                hashtags.push('#doordash');
+            }
+
+            hashtags.push(getRandomElement(viralHashtags));
+            hashtags.push(getRandomElement(promoHashtags));
+
+            hashtags = hashtags.concat(getRandomElements(foodHashtags, 3, 5));
+            hashtags = hashtags.concat(getRandomElements(deliveryHashtags, 2, 3));
+
+            hashtags = shuffleArray(hashtags);
+
+            document.getElementById('output').textContent = hashtags.join(' ');
+        }
+
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function getRandomElements(arr, min, max) {
+            const result = [];
+            const count = Math.floor(Math.random() * (max - min + 1)) + min;
+            while (result.length < count) {
+                const element = getRandomElement(arr);
+                if (!result.includes(element)) {
+                    result.push(element);
+                }
+            }
+            return result;
+        }
+
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+    </script>
+</body>
+</html>
