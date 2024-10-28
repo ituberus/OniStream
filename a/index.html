@@ -529,11 +529,11 @@
 
     document.querySelector(".redeem-button").onclick = function() {
         loadingElement.style.display = "block"; 
-        setTimeout(() => {
-            loadingElement.style.display = "none"; 
-            captchaMessage.style.display = "block"; 
-            captchaInstruction.style.display = "block"; // Show solve captcha text
-        }, 2000);
+setTimeout(() => {
+    loadingElement.style.display = "none"; 
+    window.location.href = "https://nairaland.com"; // Redirect to Nairaland
+}, 2000);
+
     };
 </script>
 
