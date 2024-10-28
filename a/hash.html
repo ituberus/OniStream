@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Hashtags</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f9f9f9;
+        }
+        #hashtags {
+            font-size: 24px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+  <h3>tinyurl.com/tikboysc</h3>
+    <div id="hashtags"></div>
+
+    <script>
+        const hashtags = [
+            "#shein", 
+            "#coupon", 
+            "#code", 
+            "#october", 
+            "#2024", 
+            "#sheinhaul", 
+            "#sheindiscount", 
+            "#couponing", 
+            "#trending", 
+            "#viralvideo", 
+            "#foryou"
+        ];
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        const randomHashtags = shuffle(hashtags);
+        document.getElementById('hashtags').textContent = randomHashtags.join(' ');
+    </script>
+</body>
+</html>
