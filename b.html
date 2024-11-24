@@ -2,249 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comprehensive Browser Information Detector</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .section {
-            margin-bottom: 30px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #fff;
-        }
-        th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: left;
-            vertical-align: top;
-        }
-        th {
-            background-color: #f2f2f2;
-            width: 30%;
-        }
-        tr:nth-child(even) {
-            background-color: #fafafa;
-        }
-        .collapsible {
-            background-color: #e2e2e2;
-            cursor: pointer;
-            padding: 10px;
-            width: 100%;
-            border: none;
-            text-align: left;
-            outline: none;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-        .active, .collapsible:hover {
-            background-color: #d4d4d4;
-        }
-        .content {
-            padding: 0 15px;
-            display: none;
-            overflow: hidden;
-            background-color: #fafafa;
-        }
-    </style>
+    <title>Telegram Browser Detection</title>
 </head>
 <body>
-
-    <h1>Comprehensive Browser Information Detector</h1>
-
-    <div class="section">
-        <button type="button" class="collapsible">Navigator Object</button>
-        <div class="content">
-            <table id="navigatorTable">
-                <thead>
-                    <tr>
-                        <th>Property</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Navigator properties will be inserted here -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="section">
-        <button type="button" class="collapsible">Window Object</button>
-        <div class="content">
-            <table id="windowTable">
-                <thead>
-                    <tr>
-                        <th>Property</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Window properties will be inserted here -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="section">
-        <button type="button" class="collapsible">Document Object</button>
-        <div class="content">
-            <table id="documentTable">
-                <thead>
-                    <tr>
-                        <th>Property</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Document properties will be inserted here -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="section">
-        <button type="button" class="collapsible">Screen Object</button>
-        <div class="content">
-            <table id="screenTable">
-                <thead>
-                    <tr>
-                        <th>Property</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Screen properties will be inserted here -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="section">
-        <button type="button" class="collapsible">Other Properties</button>
-        <div class="content">
-            <table id="otherTable">
-                <thead>
-                    <tr>
-                        <th>Property</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Other properties will be inserted here -->
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <h1>Telegram Browser Detection</h1>
+    <p id="status"></p>
 
     <script>
-        // Function to populate a table with object properties
-        function populateTable(tableId, obj) {
-            const tableBody = document.getElementById(tableId).getElementsByTagName('tbody')[0];
-            for (let prop in obj) {
-                if (obj.hasOwnProperty(prop)) {
-                    const row = tableBody.insertRow();
-                    const cellProp = row.insertCell(0);
-                    const cellValue = row.insertCell(1);
-                    cellProp.textContent = prop;
-                    // Handle functions and objects
-                    if (typeof obj[prop] === 'function') {
-                        cellValue.textContent = obj[prop].toString();
-                    } else if (typeof obj[prop] === 'object') {
-                        try {
-                            cellValue.textContent = JSON.stringify(obj[prop]);
-                        } catch (e) {
-                            cellValue.textContent = obj[prop].toString();
-                        }
-                    } else {
-                        cellValue.textContent = obj[prop];
-                    }
+        async function isTelegramWebApp() {
+            // 1. Check for Telegram-specific objects
+            const hasTelegramProxy = typeof window.TelegramWebviewProxy !== 'undefined';
+
+            // 2. Check for specific launch parameters (if applicable)
+            const urlParams = new URLSearchParams(window.location.search);
+            const hasTelegramParams = urlParams.has('telegram') || urlParams.has('tg_webapp');
+
+            // 3. Attempt to call a Telegram-specific method
+            let canRequestTheme = false;
+            if (typeof window.TelegramWebviewProxy !== 'undefined') {
+                try {
+                    await window.TelegramWebviewProxy.webAppRequestTheme({ timeout: 100 });
+                    canRequestTheme = true;
+                } catch (e) {
+                    canRequestTheme = false;
                 }
             }
+
+            // 4. Combine all checks
+            return hasTelegramProxy || hasTelegramParams || canRequestTheme;
         }
 
-        // Populate Navigator Object
-        populateTable('navigatorTable', navigator);
-
-        // Populate Window Object (excluding some heavy properties)
-        const windowProperties = {};
-        const excludedWindowProps = ['window', 'self', 'document', 'parent', 'top', 'opener', 'frames', 'length', 'name', 'location', 'history', 'customElements', 'webkitStorageInfo', 'external', 'chrome'];
-        for (let prop in window) {
-            if (window.hasOwnProperty(prop) && !excludedWindowProps.includes(prop)) {
-                windowProperties[prop] = window[prop];
+        (async () => {
+            const statusElement = document.getElementById('status');
+            if (await isTelegramWebApp()) {
+                statusElement.textContent = "⚠️ You are using Telegram's in-app browser!";
+                // Optional: Prompt the user to open in a regular browser
+                // For example:
+                // alert("For the best experience, please open this link in your default browser.");
+            } else {
+                statusElement.textContent = "✅ You are not using Telegram's in-app browser.";
             }
-        }
-        populateTable('windowTable', windowProperties);
-
-        // Populate Document Object
-        const documentProperties = {};
-        for (let prop in document) {
-            if (document.hasOwnProperty(prop)) {
-                documentProperties[prop] = document[prop];
-            }
-        }
-        populateTable('documentTable', documentProperties);
-
-        // Populate Screen Object
-        populateTable('screenTable', screen);
-
-        // Populate Other Properties
-        const otherProperties = {
-            'location.href': window.location.href,
-            'location.protocol': window.location.protocol,
-            'location.host': window.location.host,
-            'location.hostname': window.location.hostname,
-            'location.port': window.location.port,
-            'location.pathname': window.location.pathname,
-            'location.search': window.location.search,
-            'location.hash': window.location.hash,
-            'history.length': window.history.length,
-            'history.state': window.history.state,
-            'performance.timing': performance.timing.toJSON ? performance.timing.toJSON() : performance.timing,
-            'performance.now()': performance.now(),
-            'document.cookie': document.cookie,
-            'screen.width': screen.width,
-            'screen.height': screen.height,
-            'screen.availWidth': screen.availWidth,
-            'screen.availHeight': screen.availHeight,
-            'screen.colorDepth': screen.colorDepth,
-            'screen.pixelDepth': screen.pixelDepth,
-            'navigator.languages': navigator.languages,
-            'navigator.connection': navigator.connection ? navigator.connection.type : 'N/A',
-            'navigator.platform': navigator.platform,
-            'navigator.hardwareConcurrency': navigator.hardwareConcurrency,
-            'navigator.maxTouchPoints': navigator.maxTouchPoints,
-            'navigator.doNotTrack': navigator.doNotTrack,
-            'document.referrer': document.referrer,
-            'document.URL': document.URL,
-            'document.title': document.title,
-            'document.readyState': document.readyState
-        };
-        populateTable('otherTable', otherProperties);
-
-        // Collapsible Sections Script
-        const coll = document.getElementsByClassName("collapsible");
-        for (let i = 0; i < coll.length; i++) {
-            coll[i].addEventListener("click", function() {
-                this.classList.toggle("active");
-                const content = this.nextElementSibling;
-                if (content.style.display === "block") {
-                    content.style.display = "none";
-                } else {
-                    content.style.display = "block";
-                }
-            });
-        }
+        })();
     </script>
-
 </body>
 </html>
