@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser Agent Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .user-agent {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Browser Agent Detector</h1>
+    <p>Your browser's user agent is:</p>
+    <p class="user-agent" id="userAgent"></p>
+
+    <script>
+        // Detect and display the user agent
+        document.getElementById('userAgent').textContent = navigator.userAgent;
+    </script>
+</body>
+</html>
