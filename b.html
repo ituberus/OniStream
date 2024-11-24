@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detect Telegram Browser</title>
+    <title>Detect Telegram In-App Browser</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,18 +23,44 @@
 
     <script>
         function isTelegramInAppBrowser() {
-            // Check if the user agent contains specific Telegram identifiers
-            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            return userAgent.includes('Telegram');
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+
+            // 1. Check if user agent contains 'Telegram'
+            const hasTelegramUA = ua.includes('Telegram') || ua.includes('TelegramDesktop');
+
+            // 2. Check for Telegram-specific properties (if any)
+            // Note: As of now, Telegram does not expose a specific JavaScript API,
+            // but you can check for custom properties if Telegram adds any in the future.
+            const hasTelegramProperties = typeof window.TelegramWebviewProxy !== 'undefined';
+
+            // 3. Check the referrer (optional)
+            const referrer = document.referrer;
+            const isFromTelegram = referrer.includes('t.me') || referrer.includes('telegram');
+
+            // 4. Combine checks to increase reliability
+            return hasTelegramUA || hasTelegramProperties || isFromTelegram;
         }
 
         // Display detection result
         const result = document.getElementById('result');
         if (isTelegramInAppBrowser()) {
-            result.textContent = "You are using Telegram's in-app browser!";
+            result.textContent = "⚠️ You are using Telegram's in-app browser!";
+            
+            // Optional: Provide a prompt or redirect to open in the default browser
+            // Example: Show a modal or banner with instructions
+            // Or automatically redirect (use with caution)
+            /*
+            alert("For the best experience, please open this link in your default browser.");
+            // Example of redirecting to the same URL in a new tab (if allowed)
+            window.open(window.location.href, '_blank');
+            */
         } else {
-            result.textContent = "You are not in Telegram's in-app browser.";
+            result.textContent = "✅ You are not using Telegram's in-app browser.";
         }
+
+        // Optional: Log user agent for debugging
+        console.log("User Agent:", navigator.userAgent);
+        console.log("Referrer:", document.referrer);
     </script>
 </body>
 </html>
