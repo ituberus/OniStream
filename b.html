@@ -3,27 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browser Agent Detector</title>
+    <title>Detect Telegram Browser</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 50px;
         }
-        .user-agent {
+        .message {
             font-weight: bold;
-            color: #333;
+            font-size: 20px;
+            color: #ff3333;
         }
     </style>
 </head>
 <body>
-    <h1>Browser Agent Detector</h1>
-    <p>Your browser's user agent is:</p>
-    <p class="user-agent" id="userAgent"></p>
+    <h1>Browser Detector</h1>
+    <p id="result" class="message"></p>
 
     <script>
-        // Detect and display the user agent
-        document.getElementById('userAgent').textContent = navigator.userAgent;
+        function isTelegramInAppBrowser() {
+            // Check if the user agent contains specific Telegram identifiers
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            return userAgent.includes('Telegram');
+        }
+
+        // Display detection result
+        const result = document.getElementById('result');
+        if (isTelegramInAppBrowser()) {
+            result.textContent = "You are using Telegram's in-app browser!";
+        } else {
+            result.textContent = "You are not in Telegram's in-app browser.";
+        }
     </script>
 </body>
 </html>
