@@ -3,48 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram In-App Browser Detection</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            text-align: center;
-        }
-        .result {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-        }
-        .detected {
-            color: #FF5733;
-        }
-        .not-detected {
-            color: #28A745;
-        }
-    </style>
+    <title>Open Link in Default Browser</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <h1>Telegram In-App Browser Detection</h1>
-    <p id="detection-result" class="result"></p>
+    <h1>Open Link in Default Browser</h1>
+    <button id="openLinkButton">Open Google</button>
 
     <script>
-        function isTelegramInAppBrowser() {
-            // Detect if Telegram in-app browser objects exist
-            const isAndroidTelegram = typeof window.TelegramWebview !== 'undefined';
-            const isIosTelegram = typeof window.TelegramWebviewProxy !== 'undefined' || typeof window.TelegramWebviewProxyProto !== 'undefined';
-
-            return isAndroidTelegram || isIosTelegram;
-        }
-
-        // Display detection result
-        const resultElement = document.getElementById('detection-result');
-        if (isTelegramInAppBrowser()) {
-            resultElement.textContent = "⚠️ Telegram In-App Browser Detected!";
-            resultElement.classList.add('detected');
+        // Ensure Telegram WebApp API is loaded
+        if (typeof Telegram !== "undefined" && Telegram.WebApp) {
+            const button = document.getElementById('openLinkButton');
+            
+            // Set up the button to use Telegram's openLink method
+            button.addEventListener('click', () => {
+                Telegram.WebApp.openLink('https://www.google.com/');
+            });
         } else {
-            resultElement.textContent = "✅ Not a Telegram In-App Browser.";
-            resultElement.classList.add('not-detected');
+            // Fallback for environments without Telegram WebApp API
+            console.warn("Telegram WebApp API not detected. Opening link normally.");
+            const button = document.getElementById('openLinkButton');
+            button.addEventListener('click', () => {
+                window.open('https://www.google.com/', '_blank');
+            });
         }
     </script>
 </body>
