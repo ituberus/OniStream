@@ -2,47 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Telegram Browser Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram In-App Browser Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        .detected {
+            color: #FF5733;
+        }
+        .not-detected {
+            color: #28A745;
+        }
+    </style>
 </head>
 <body>
-    <h1>Telegram Browser Detection</h1>
-    <p id="status"></p>
+    <h1>Telegram In-App Browser Detection</h1>
+    <p id="detection-result" class="result"></p>
 
     <script>
-        async function isTelegramWebApp() {
-            // 1. Check for Telegram-specific objects
-            const hasTelegramProxy = typeof window.TelegramWebviewProxy !== 'undefined';
+        function isTelegramInAppBrowser() {
+            // Detect if Telegram in-app browser objects exist
+            const isAndroidTelegram = typeof window.TelegramWebview !== 'undefined';
+            const isIosTelegram = typeof window.TelegramWebviewProxy !== 'undefined' || typeof window.TelegramWebviewProxyProto !== 'undefined';
 
-            // 2. Check for specific launch parameters (if applicable)
-            const urlParams = new URLSearchParams(window.location.search);
-            const hasTelegramParams = urlParams.has('telegram') || urlParams.has('tg_webapp');
-
-            // 3. Attempt to call a Telegram-specific method
-            let canRequestTheme = false;
-            if (typeof window.TelegramWebviewProxy !== 'undefined') {
-                try {
-                    await window.TelegramWebviewProxy.webAppRequestTheme({ timeout: 100 });
-                    canRequestTheme = true;
-                } catch (e) {
-                    canRequestTheme = false;
-                }
-            }
-
-            // 4. Combine all checks
-            return hasTelegramProxy || hasTelegramParams || canRequestTheme;
+            return isAndroidTelegram || isIosTelegram;
         }
 
-        (async () => {
-            const statusElement = document.getElementById('status');
-            if (await isTelegramWebApp()) {
-                statusElement.textContent = "⚠️ You are using Telegram's in-app browser!";
-                // Optional: Prompt the user to open in a regular browser
-                // For example:
-                // alert("For the best experience, please open this link in your default browser.");
-            } else {
-                statusElement.textContent = "✅ You are not using Telegram's in-app browser.";
-            }
-        })();
+        // Display detection result
+        const resultElement = document.getElementById('detection-result');
+        if (isTelegramInAppBrowser()) {
+            resultElement.textContent = "⚠️ Telegram In-App Browser Detected!";
+            resultElement.classList.add('detected');
+        } else {
+            resultElement.textContent = "✅ Not a Telegram In-App Browser.";
+            resultElement.classList.add('not-detected');
+        }
     </script>
 </body>
 </html>
