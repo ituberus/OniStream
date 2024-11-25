@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta and Title -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Reed - Profile</title>
+	<meta name="robots" content="noindex, nofollow">
+    <!-- Google Fonts and Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Styles -->
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            overflow: hidden;
+        }
+
+        /* Cover Picture */
+        .cover-picture {
+            width: 100%;
+            height: 30%;
+            background-image: url('cover.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        /* Profile Picture */
+        .profile-picture {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-image: url('profile.jpg');
+            background-size: cover;
+            background-position: center;
+            border: 4px solid #121212;
+        }
+
+        /* User Information */
+        .user-info {
+            margin-top: 60px;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .user-info h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            font-size: 14px;
+            color: #b0b0b0;
+            margin-bottom: 10px;
+        }
+
+        .online-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #66bb6a;
+        }
+
+        .online-status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background-color: #66bb6a;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        /* Interests */
+        .interests {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .interest {
+            background-color: #1f1f1f;
+            padding: 8px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            cursor: default;
+            transition: background-color 0.3s;
+        }
+
+        .interest:hover {
+            background-color: #2a2a2a;
+        }
+
+        .interest .material-icons {
+            margin-right: 6px;
+            color: #ffeb3b;
+            font-size: 18px;
+        }
+
+        /* Chat Button */
+        .chat-button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .chat-button {
+            padding: 12px 20px;
+            background-color: #1e90ff;
+            color: #ffffff;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        .chat-button:hover {
+            background-color: #63b3ed;
+        }
+
+        .chat-button .material-icons {
+            margin-right: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .cover-picture {
+                height: 25%;
+            }
+
+            .profile-picture {
+                width: 80px;
+                height: 80px;
+                bottom: -40px;
+            }
+
+            .user-info h1 {
+                font-size: 20px;
+            }
+
+            .user-info p {
+                font-size: 12px;
+            }
+
+            .online-status {
+                font-size: 10px;
+            }
+
+            .interests {
+                gap: 8px;
+            }
+
+            .interest {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .chat-button {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cover Picture -->
+    <div class="cover-picture">
+        <div class="profile-picture"></div>
+    </div>
+
+    <!-- User Information -->
+    <div class="user-info">
+        <h1>Anna Reed</h1>
+        <p>Date of Birth: <span id="dobDayMonth"></span>, 1999</p>
+        <p>Username: @itsanna</p>
+        <div class="online-status">Online</div>
+    </div>
+
+    <!-- Interests -->
+<!-- Interests -->
+<div class="interests">
+    <div class="interest">
+        <span class="material-icons">chat</span> Sex Chat
+    </div>
+    <div class="interest">
+        <span class="material-icons">favorite</span> Dating
+    </div>
+    <div class="interest">
+        <span class="material-icons">location_on</span> Meet-Ups
+    </div>
+    <div class="interest">
+        <span class="material-icons">videocam</span> Video Chat
+    </div>
+    <div class="interest">
+        <span class="material-icons">accessibility</span> Flirting
+    </div>
+    <div class="interest">
+        <span class="material-icons">record_voice_over</span> Voice Chat
+    </div>
+</div>
+
+        <!-- Add more interests here -->
+    </div>
+
+    <!-- Chat with Ann Button -->
+    <div class="chat-button-container">
+        <button class="chat-button" id="chatWithAnnButton">
+            <span class="material-icons">message</span> Chat with Anna
+        </button>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // DOM Elements
+        const chatWithAnnButton = document.getElementById('chatWithAnnButton');
+        const dobDayMonth = document.getElementById('dobDayMonth');
+
+        // Function to Get Current Day and Month
+        function getCurrentDayMonth() {
+            const today = new Date();
+            const options = { month: 'long', day: 'numeric' };
+            return today.toLocaleDateString(undefined, options);
+        }
+
+        // Set Date of Birth Day and Month
+        dobDayMonth.textContent = getCurrentDayMonth();
+
+        // Event Listener for Chat with Ann Button
+        chatWithAnnButton.addEventListener('click', () => {
+            window.location.href = 'https://elfinite.com/itsanna/chat'; // Update with your chat interface file name
+        });
+    </script>
+
+</body>
+</html>

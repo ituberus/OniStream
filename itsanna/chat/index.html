@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta and Title -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Reed - Chat</title>
+    <!-- Google Fonts and Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Styles -->
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background-color: #1f1f1f;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            height: 70px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-pic {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-image: url('profile.jpg');
+            background-size: cover;
+            background-position: center;
+            margin-right: 12px;
+            border: 2px solid #333;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contact-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: #e0e0e0;
+        }
+
+        .online-status {
+            font-size: 12px;
+            color: #66bb6a;
+            display: flex;
+            align-items: center;
+        }
+
+        .online-status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background-color: #66bb6a;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-icon {
+            font-size: 24px;
+            color: #b0b0b0;
+            margin-left: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .header-icon:hover {
+            color: #1e90ff;
+        }
+
+        /* Menu Overlay */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100%;
+            background-color: #1f1f1f;
+            box-shadow: -2px 0 8px rgba(0,0,0,0.7);
+            transition: right 0.3s ease;
+            z-index: 20;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .menu-overlay.active {
+            right: 0;
+        }
+
+        .menu-overlay .profile-pic-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-image: url('profile.jpg');
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 20px;
+            border: 3px solid #333;
+        }
+
+        .menu-overlay ul {
+            list-style: none;
+            width: 100%;
+            padding: 0;
+        }
+
+        .menu-overlay li {
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            font-size: 16px;
+            color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .menu-overlay li:hover {
+            background-color: #2a2a2a;
+        }
+
+        .menu-overlay li .material-icons {
+            margin-right: 15px;
+            color: #b0b0b0;
+        }
+
+        /* Chat Area */
+        .chat-container {
+            position: fixed;
+            top: 70px;
+            bottom: 70px;
+            left: 0;
+            right: 0;
+            overflow-y: auto;
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column-reverse; /* Changed to column-reverse */
+            gap: 15px;
+            background-color: #121212;
+            z-index: 1;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            position: relative;
+            font-size: 16px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .message.sent {
+            background-color: #2e7d32;
+            align-self: flex-end;
+            border-top-right-radius: 0;
+            color: #e0e0e0;
+        }
+
+        .message.received {
+            background-color: #1f1f1f;
+            align-self: flex-start;
+            border-top-left-radius: 0;
+            color: #e0e0e0;
+        }
+
+        /* Image Message */
+.message img {
+    max-width: 100%;
+    max-height: 150px; /* Ensures the image doesn't exceed a height of 300px */
+    border-radius: 15px;
+    margin-top: 10px;
+    object-fit: cover; /* Ensures aspect ratio is maintained while cropping any overflow */
+}
+
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            align-self: flex-start;
+            margin-left: 10px;
+        }
+
+        .typing-indicator .bubble {
+            background-color: #1f1f1f;
+            border-radius: 15px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .typing-indicator .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: blink 1.4s infinite both;
+        }
+
+        .typing-indicator .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-indicator .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 0.2;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.2;
+            }
+        }
+
+        /* Input Area */
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #1f1f1f;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.5);
+            z-index: 10;
+            height: 70px;
+        }
+
+        .input-area .upload-icon {
+            font-size: 28px;
+            color: #b0b0b0;
+            cursor: pointer;
+            margin-right: 15px;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .input-area .upload-icon:hover {
+            color: #1e90ff;
+        }
+
+        .upload-options {
+            position: absolute;
+            bottom: 70px;
+            left: 10px;
+            background-color: #1f1f1f;
+            border: 1px solid #333;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+            display: none;
+            flex-direction: column;
+            z-index: 25;
+            width: 200px;
+        }
+
+        .upload-options div {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .upload-options div:hover {
+            background-color: #2a2a2a;
+        }
+
+        .upload-options div .material-icons {
+            margin-right: 12px;
+            color: #b0b0b0;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #333;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+            transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+        }
+
+        .input-area input::placeholder {
+            color: #888888;
+        }
+
+        .input-area input:focus {
+            border-color: #1e90ff;
+            background-color: #383838;
+        }
+
+        .send-button {
+            font-size: 28px;
+            color: #1e90ff;
+            margin-left: 15px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .send-button:hover {
+            color: #63b3ed;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(30, 30, 30, 0.9);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 25px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 15;
+            font-size: 14px;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+
+        /* Birthday Popup */
+        .birthday-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1f1f1f;
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 30px 20px;
+            width: 90%;
+            max-width: 400px;
+            z-index: 30;
+            text-align: center;
+            color: #e0e0e0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.7);
+            animation: popupAnimation 0.6s ease-out;
+            overflow: hidden;
+        }
+
+        @keyframes popupAnimation {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -60%) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .birthday-popup h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffeb3b;
+        }
+
+        .birthday-popup h2 .emoji {
+            font-size: 30px;
+            margin-right: 10px;
+        }
+
+        .birthday-popup p {
+            font-size: 16px;
+            margin-bottom: 25px;
+            color: #e0e0e0;
+        }
+
+        .birthday-popup p .highlight {
+            color: #ffeb3b;
+            font-weight: 500;
+        }
+
+        .birthday-popup button {
+            background-color: #ff5722;
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .birthday-popup button:hover {
+            background-color: #e64a19;
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            top: -10%;
+            left: 50%;
+            width: 1px;
+            height: 1px;
+            pointer-events: none;
+            z-index: 35;
+            overflow: visible;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--confetti-color);
+            opacity: 0;
+            transform: translate(-50%, -50%) rotate(0deg);
+            animation: confetti-fall linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                opacity: 1;
+                transform: translate(var(--x-start), var(--y-start)) rotate(0deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(var(--x-end), var(--y-end)) rotate(360deg);
+            }
+        }
+
+        /* Disable background interaction */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 25;
+        }
+
+        /* Scrollbar Styling */
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: #1f1f1f;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background-color: #555555;
+            border-radius: 3px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .header {
+                height: 60px;
+            }
+
+            .chat-container {
+                top: 60px;
+                bottom: 70px;
+            }
+
+            .header .contact-name {
+                font-size: 16px;
+            }
+            .header-icon {
+                font-size: 22px;
+                margin-left: 15px;
+            }
+            .profile-pic {
+                width: 40px;
+                height: 40px;
+                margin-right: 10px;
+            }
+            .menu-overlay {
+                width: 240px;
+                padding: 15px;
+            }
+            .menu-overlay .profile-pic-large {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 15px;
+            }
+            .menu-overlay li {
+                padding: 12px 16px;
+                font-size: 15px;
+            }
+            .input-area {
+                height: 70px;
+            }
+            .upload-options {
+                bottom: 70px;
+            }
+            .input-area .upload-icon {
+                font-size: 24px;
+                margin-right: 10px;
+            }
+            .input-area input {
+                font-size: 15px;
+            }
+            .send-button {
+                font-size: 24px;
+                margin-left: 10px;
+            }
+            .notification {
+                bottom: 80px;
+            }
+            .birthday-popup {
+                width: 90%;
+                padding: 20px 15px;
+            }
+            .birthday-popup h2 {
+                font-size: 22px;
+            }
+            .birthday-popup p {
+                font-size: 15px;
+            }
+            .birthday-popup button {
+                font-size: 15px;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <div class="header-left">
+        <div class="profile-pic"></div>
+        <div class="contact-info">
+            <div class="contact-name">Anna Reed</div>
+            <div class="online-status">Online</div>
+        </div>
+    </div>
+    <div class="header-right">
+        <span class="material-icons header-icon" id="videoCall">videocam</span>
+        <span class="material-icons header-icon" id="audioCall">call</span>
+        <span class="material-icons header-icon" id="menuButton">more_vert</span>
+    </div>
+</div>
+
+<!-- Menu Overlay -->
+<div class="menu-overlay" id="menuOverlay">
+    <div class="profile-pic-large"></div>
+    <ul>
+        <li data-action="viewProfile">
+            <span class="material-icons">person</span> View Profile
+        </li>
+        <li data-action="block">
+            <span class="material-icons">block</span> Block
+        </li>
+        <li data-action="mute">
+            <span class="material-icons">volume_off</span> Mute Notifications
+        </li>
+        <li data-action="clear">
+            <span class="material-icons">delete</span> Clear Chat
+        </li>
+    </ul>
+</div>
+
+<!-- Chat Container -->
+<div class="chat-container" id="chatContainer">
+    <!-- Messages will appear here dynamically -->
+</div>
+
+<!-- Input Area -->
+<div class="input-area">
+    <span class="material-icons upload-icon" id="uploadIcon">attach_file</span>
+    <div class="upload-options" id="uploadOptions">
+        <div data-type="image">
+            <span class="material-icons">image</span> Image
+        </div>
+        <div data-type="video">
+            <span class="material-icons">videocam</span> Video
+        </div>
+        <div data-type="file">
+            <span class="material-icons">insert_drive_file</span> File
+        </div>
+        <div data-type="audio">
+            <span class="material-icons">mic</span> Audio
+        </div>
+    </div>
+    <input type="text" placeholder="Type a message..." id="messageInput">
+    <span class="material-icons send-button" id="sendButton">send</span>
+</div>
+
+<!-- Notification -->
+<div class="notification" id="notification">
+    Please login
+</div>
+
+<!-- Birthday Popup -->
+<div class="modal-overlay" id="modalOverlay" style="display: none;"></div>
+<div class="birthday-popup" id="birthdayPopup" style="display: none;">
+    <h2><span class="emoji">🎉</span> It's Anna's Birthday!</h2>
+    <p>To continue chatting with Ann, you need to send a birthday present. <span class="highlight">100% Free!</span> 🥳</p>
+    <button id="sendGiftButton">Send Birthday Present (Free)</button>
+</div>
+
+<!-- Confetti -->
+<div class="confetti" id="confetti"></div>
+
+<!-- Audio Elements -->
+<audio id="messageReceivedSound" src="https://www.soundjay.com/buttons/sounds/button-29.mp3" preload="auto"></audio>
+<audio id="messageSentSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3" preload="auto"></audio>
+
+<!-- Preload Image -->
+<img id="preloadedImage" src="" style="display: none;" alt="Preloaded">
+
+<!-- Scripts -->
+<script>
+    // DOM Elements
+    const menuButton = document.getElementById('menuButton');
+    const menuOverlay = document.getElementById('menuOverlay');
+    const notification = document.getElementById('notification');
+    const uploadIcon = document.getElementById('uploadIcon');
+    const uploadOptions = document.getElementById('uploadOptions');
+    const chatContainer = document.getElementById('chatContainer');
+    const sendButton = document.getElementById('sendButton');
+    const messageInput = document.getElementById('messageInput');
+    const messageReceivedSound = document.getElementById('messageReceivedSound');
+    const messageSentSound = document.getElementById('messageSentSound');
+    const preloadedImage = document.getElementById('preloadedImage');
+    const birthdayPopup = document.getElementById('birthdayPopup');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const sendGiftButton = document.getElementById('sendGiftButton');
+    const confettiContainer = document.getElementById('confetti');
+
+    // Variables
+    let annFirstMessageSent = false;
+    let annMessageTimeout;
+    let birthdayPopupShown = false;
+    let afterSecondMessage = false;
+    let userSentMessageAfterSecond = false;
+
+    // Preload Image with Base64 Data URL
+    preloadedImage.src = 'image.jpg';
+
+    // Toggle Menu Overlay
+    menuButton.addEventListener('click', () => {
+        menuOverlay.classList.toggle('active');
+    });
+
+    // Close Menu Overlay when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!menuOverlay.contains(e.target) && !menuButton.contains(e.target)) {
+            menuOverlay.classList.remove('active');
+        }
+    });
+
+    // Handle Menu Actions
+    const menuItems = menuOverlay.querySelectorAll('li');
+    menuItems.forEach(item => {
+        item.addEventListener('click', () => {
+            showNotification();
+            menuOverlay.classList.remove('active');
+        });
+    });
+
+    // Show Notification
+    function showNotification() {
+        notification.classList.add('show');
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+
+    // Toggle Upload Options
+    uploadIcon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        uploadOptions.style.display = uploadOptions.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    // Close Upload Options when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!uploadIcon.contains(e.target) && !uploadOptions.contains(e.target)) {
+            uploadOptions.style.display = 'none';
+        }
+    });
+
+    // Handle Upload Options Click
+    const uploadItems = uploadOptions.querySelectorAll('div');
+    uploadItems.forEach(item => {
+        item.addEventListener('click', () => {
+            showNotification();
+            uploadOptions.style.display = 'none';
+        });
+    });
+
+    // Send Message Functionality
+    sendButton.addEventListener('click', () => {
+        const messageText = messageInput.value.trim();
+        if (messageText !== '') {
+            appendMessage('sent', messageText);
+            messageInput.value = '';
+            messageSentSound.play();
+            chatContainer.scrollTop = 0; // Scroll to bottom
+            if (!annFirstMessageSent) {
+                clearTimeout(annMessageTimeout);
+                annFirstMessageSequence();
+            }
+            // Check if after second message
+            if (afterSecondMessage && !birthdayPopupShown) {
+                userSentMessageAfterSecond = true;
+                setTimeout(() => {
+                    showBirthdayPopup();
+                }, 5000);
+            }
+        }
+    });
+
+    // Send message on Enter key
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendButton.click();
+        }
+    });
+
+    // Placeholder for Call Buttons
+    document.getElementById('videoCall').addEventListener('click', () => {
+        showNotification();
+    });
+
+    document.getElementById('audioCall').addEventListener('click', () => {
+        showNotification();
+    });
+
+    // Typing Indicator
+    function showTypingIndicator() {
+        const typingIndicator = document.createElement('div');
+        typingIndicator.classList.add('typing-indicator');
+        typingIndicator.setAttribute('id', 'typingIndicator');
+        typingIndicator.innerHTML = `
+            <div class="bubble">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        `;
+        chatContainer.insertBefore(typingIndicator, chatContainer.firstChild);
+        chatContainer.scrollTop = 0;
+    }
+
+    function removeTypingIndicator() {
+        const typingIndicator = document.getElementById('typingIndicator');
+        if (typingIndicator) {
+            chatContainer.removeChild(typingIndicator);
+        }
+    }
+
+    // Append Message
+    function appendMessage(type, text, isImage = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', type);
+        if (isImage) {
+            messageDiv.innerHTML = `<img src="${text}" alt="Image Message">`;
+        } else {
+            messageDiv.textContent = text;
+        }
+        chatContainer.insertBefore(messageDiv, chatContainer.firstChild);
+        chatContainer.scrollTop = 0;
+    }
+
+    // Ann's Message Sequence
+    function annFirstMessageSequence() {
+        annFirstMessageSent = true;
+        // First Typing Animation
+        showTypingIndicator();
+        setTimeout(() => {
+            removeTypingIndicator();
+            // Ann's First Message
+            appendMessage('received', "Hey babe, I'm glad you're here 😊");
+            messageReceivedSound.play();
+            chatContainer.scrollTop = 0;
+
+            // Second Typing Animation after 3 seconds
+            setTimeout(() => {
+                showTypingIndicator();
+                setTimeout(() => {
+                    removeTypingIndicator();
+                    // Ann's Second Message with Image and Text
+                    appendMessage('received', "It's my birthday today babe 🎉, Wanna see my birthday outfit? 😉");
+                    appendMessage('received', preloadedImage.src, true);
+                    messageReceivedSound.play();
+                    chatContainer.scrollTop = 0;
+                    afterSecondMessage = true;
+
+                    // If user doesn't send a message after 20 seconds, show popup
+                    setTimeout(() => {
+                        if (!userSentMessageAfterSecond && !birthdayPopupShown) {
+                            showBirthdayPopup();
+                        }
+                    }, 20000); // 20 seconds
+                }, 6000); // Typing for 6 seconds
+            }, 3000); // Wait for 3 seconds before starting typing again
+        }, 3000); // Typing for 3 seconds
+    }
+
+    // Start Ann's Message Sequence after Page Load
+    annMessageTimeout = setTimeout(() => {
+        annFirstMessageSequence();
+    }, 3000);
+
+    // Show Birthday Popup
+    function showBirthdayPopup() {
+        birthdayPopupShown = true;
+        modalOverlay.style.display = 'block';
+        birthdayPopup.style.display = 'block';
+        launchConfetti();
+    }
+
+    // Handle Send Gift Button
+    sendGiftButton.addEventListener('click', () => {
+        window.location.href = 'https://elfinite.com/gift';
+    });
+
+    // Disable background interaction when popup is open
+    document.addEventListener('click', (e) => {
+        if (birthdayPopupShown && !birthdayPopup.contains(e.target)) {
+            e.stopPropagation();
+        }
+    });
+
+    // Disable keyboard input when popup is open
+    document.addEventListener('keydown', (e) => {
+        if (birthdayPopupShown) {
+            e.preventDefault();
+        }
+    });
+
+    // Confetti Animation
+    function launchConfetti() {
+        const colors = ['#ffeb3b', '#ff5722', '#1e90ff', '#66bb6a', '#e91e63'];
+        const confettiCount = 100;
+        const animationDuration = 3000; // in milliseconds
+
+        for (let i = 0; i < confettiCount; i++) {
+            const confettiPiece = document.createElement('div');
+            confettiPiece.classList.add('confetti-piece');
+            confettiPiece.style.setProperty('--confetti-color', colors[Math.floor(Math.random() * colors.length)]);
+            confettiPiece.style.setProperty('--x-start', `${Math.random() * 100 - 50}vw`);
+            confettiPiece.style.setProperty('--y-start', `${-10}vh`);
+            confettiPiece.style.setProperty('--x-end', `${Math.random() * 100 - 50}vw`);
+            confettiPiece.style.setProperty('--y-end', `${110}vh`);
+            confettiPiece.style.animationDuration = `${Math.random() * 1 + 2}s`;
+            confettiContainer.appendChild(confettiPiece);
+
+            // Remove confetti after animation
+            setTimeout(() => {
+                confettiPiece.remove();
+            }, animationDuration);
+        }
+    }
+</script>
+
+</body>
+</html>
