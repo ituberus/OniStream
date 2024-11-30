@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GitHub API Interaction</title>
+</head>
+<body>
+    <h1>Simple Webpage</h1>
+
+    <!-- Text Area with content from file.txt -->
+    <textarea id="textArea" rows="10" cols="50" placeholder="Loading content..."></textarea><br><br>
+
+    <!-- Text Box for input -->
+    <input type="text" id="textBox" placeholder="Enter text here"><br><br>
+
+    <!-- Buttons -->
+    <button id="appendButton">Append to code.txt</button>
+    <button id="saveButton">Save to file.txt</button>
+
+    <!-- JavaScript -->
+    <script>
+        // Replace with your own credentials
+        const GITHUB_USERNAME = 'ituberus';
+        const GITHUB_REPO = 'OniStream';
+        const GITHUB_TOKEN = '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'; // Do NOT expose this publicly
+
+        // Base64 encoding and decoding functions
+        function b64EncodeUnicode(str) {
+            return btoa(unescape(encodeURIComponent(str)));
+        }
+
+        function b64DecodeUnicode(str) {
+            return decodeURIComponent(escape(atob(str)));
+        }
+
+        // Function to get file content from GitHub
+        function getFileContent(filePath, callback) {
+            const apiUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${filePath}`;
+
+            fetch(apiUrl, {
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.content) {
+                    const content = b64DecodeUnicode(data.content);
+                    callback(content, data.sha);
+                } else {
+                    callback('', null);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Function to update a file on GitHub
+        function updateFile(filePath, content, sha, message) {
+            const apiUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${filePath}`;
+            const encodedContent = b64EncodeUnicode(content);
+
+            fetch(apiUrl, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({
+                    message: message,
+                    content: encodedContent,
+                    sha: sha
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.content) {
+                    alert(`${filePath} has been updated.`);
+                } else {
+                    alert(`Error updating ${filePath}: ` + JSON.stringify(data));
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Load content from file.txt into the text area
+        getFileContent('file.txt', function(content, sha) {
+            document.getElementById('textArea').value = content;
+            document.getElementById('textArea').dataset.sha = sha || '';
+        });
+
+        // Append Button functionality
+        document.getElementById('appendButton').addEventListener('click', function() {
+            let textBoxValue = document.getElementById('textBox').value;
+            if (!textBoxValue) {
+                alert('Text box is empty.');
+                return;
+            }
+
+            getFileContent('code.txt', function(content, sha) {
+                const newContent = content + '\n' + textBoxValue;
+                updateFile('code.txt', newContent, sha || '', 'Append to code.txt');
+            });
+        });
+
+        // Save Button functionality
+        document.getElementById('saveButton').addEventListener('click', function() {
+            let textAreaValue = document.getElementById('textArea').value;
+            let sha = document.getElementById('textArea').dataset.sha || '';
+            updateFile('file.txt', textAreaValue, sha, 'Update file.txt');
+        });
+    </script>
+</body>
+</html>
