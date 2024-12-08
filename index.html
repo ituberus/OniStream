@@ -1,36 +1,803 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <!-- Matomo -->
-<!-- 100% privacy-first analytics -->
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-<!-- End Matomo Code -->
-    <script>
-        // Function to perform the redirection
-        function redirectToLocation() {
-            fetch('https://ipapi.co/json/')
-                .then(response => response.json())
-                .then(data => {
-                    var country = data.country;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deposit Popup</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Arial", sans-serif;
+    }
 
-                    // Redirecting based on the country
-                    if (country === 'NG') { // NG is the country code for Nigeria
-                        window.location.href = 'https://g472mrr.mysweethoneygirls.top/xcegk3t';
-                        ///onistream/en.html
-                    } else {
-                        window.location.href = 'https://g472mrr.mysweethoneygirls.top/xcegk3t';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching the user location:', error);
-                    // Fallback redirect if the country cannot be determined
-                    window.location.href = 'https://g472mrr.mysweethoneygirls.top/xcegk3t';
-                });
-        }
-    </script>
+    body {
+      background-color: rgba(0, 0, 0, 0.5); /* Dimmed background for popup effect */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden; /* Prevent scrolling */
+    }
+
+    .popup-container {
+      width: 700px;
+      height: 500px; /* Fixed height */
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: row;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+      width: 30%;
+      background-color: #f4f5f9;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      border-right: 1px solid #eaeaea;
+    }
+
+    .region-info {
+      font-size: 11px;
+      color: #7a7a7a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .region-info img {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+    }
+
+    .region-name {
+      font-weight: bold;
+      color: #e63946; /* Red theme */
+      cursor: pointer;
+    }
+
+    /* Payment Buttons */
+    .payment-button {
+      background-color: #f4f5f9;
+      color: #333;
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+      border: 2px solid transparent;
+    }
+
+    .payment-button img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .payment-button.selected {
+      background-color: #e63946; /* Red theme */
+      color: white;
+      border-color: #e63946;
+    }
+
+    .payment-button:hover {
+      background-color: #f8d3d6;
+    }
+
+    /* Main Content */
+    .main-content {
+      width: 70%;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .header .id {
+      font-size: 11px;
+      color: #aaa;
+    }
+
+    /* Crypto Section */
+    #crypto-section {
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 24px); /* Adjusted to fit within container */
+    }
+
+    .crypto-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 items per row */
+      gap: 6px;
+      margin-bottom: 8px;
+      flex-grow: 1;
+      overflow: hidden; /* Prevent scroll */
+    }
+
+    .crypto-item {
+      background-color: #f9fafc;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+      position: relative;
+      font-size: 11px; /* Slightly increased font size */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .crypto-item:hover {
+      border-color: #e63946; /* Red theme */
+    }
+
+    .crypto-item.selected {
+      border-color: #e63946;
+    }
+
+    .crypto-item img {
+      width: 24px; /* Reduced image size */
+      height: 24px;
+      margin-bottom: 4px;
+    }
+
+    .crypto-item span {
+      font-size: 11px;
+      font-weight: bold;
+      display: block;
+    }
+
+    .notice {
+      margin-top: 8px;
+      font-size: 11px; /* Increased font size */
+      color: #555;
+      background-color: #f9f9f9;
+      padding: 8px;
+      border-radius: 8px;
+      border-left: 3px solid #e63946;
+      flex-grow: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .continue-button {
+      margin-top: 8px;
+      padding: 10px;
+      background-color: #e63946;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px; /* Slightly increased font size */
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+    }
+
+    .continue-button:hover {
+      background-color: #c5303e;
+    }
+
+    /* Payment Details Section - Integrated Design */
+    .payment-details {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 12px;
+      overflow: hidden;
+    }
+
+    .payment-details .popup {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      box-shadow: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      background-color: transparent;
+      padding: 0;
+    }
+
+    .payment-details h1 {
+      font-size: 14px;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #000;
+      align-self: flex-start;
+    }
+
+    .qr-code-container {
+      background-color: #f2f3f4;
+      width: 180px;
+      height: 180px;
+      padding: 6px;
+      margin: 0 auto;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-code-container img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    .notice-container {
+      padding: 6px 12px;
+      align-self: stretch;
+      text-align: center;
+    }
+
+    .wallet-title {
+      font-size: 13px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .wallet-address {
+      font-size: 11px;
+      word-wrap: break-word;
+      line-height: 1.2;
+      color: #555;
+      margin-top: 4px;
+    }
+
+    .button-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 12px;
+      width: 100%;
+    }
+
+    .back-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f2f3f4;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .back-btn svg {
+      width: 14px;
+      height: 14px;
+      color: #555;
+    }
+
+    .copy-btn {
+      flex-grow: 1;
+      margin-left: 8px;
+      display: inline-block;
+      padding: 10px 0;
+      background-color: #ff3b3b;
+      color: #fff;
+      font-size: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .copy-btn:hover {
+      background-color: #e03030;
+    }
+
+    .min-deposit {
+      font-size: 13px;
+      font-weight: bold;
+      color: #333;
+      margin: 10px 12px;
+      text-align: left;
+      align-self: stretch;
+    }
+
+    .warning-box {
+      background-color: #fff4e6;
+      color: #f7931a;
+      font-size: 11px;
+      padding: 10px 14px;
+      text-align: left;
+      border-radius: 8px;
+      margin: 0 12px 12px;
+      align-self: stretch;
+    }
+
+    /* FK Wallet Deposit Section */
+    .fk-wallet-deposit {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      height: 100%;
+    }
+
+    .fk-wallet-deposit label {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .fk-wallet-deposit .deposit-info {
+      font-size: 11px;
+      color: #555;
+    }
+
+    .fk-wallet-deposit .input-group {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .fk-wallet-deposit input {
+      padding: 6px 8px;
+      font-size: 14px; /* Increased input font size */
+      border: none;
+      width: 100%;
+    }
+
+    .fk-wallet-deposit .input-group span {
+      background-color: #eee;
+      padding: 6px 8px;
+      font-size: 14px;
+      color: #555;
+      border-left: 1px solid #ddd;
+      white-space: nowrap;
+    }
+
+    .preset-buttons {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .preset-button {
+      padding: 6px 10px;
+      background-color: #f4f5f9;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .preset-button:hover {
+      background-color: #e0e0e0;
+      border-color: #ccc;
+    }
+
+    .deposit-button {
+      padding: 10px;
+      background-color: #e63946; /* Red theme */
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px; /* Increased button font size */
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+    }
+
+    .deposit-button:hover {
+      background-color: #c5303e; /* Darker red */
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Toast Notification */
+    .toast {
+      visibility: hidden;
+      min-width: 200px;
+      background-color: #333;
+      color: white;
+      text-align: center;
+      border-radius: 8px;
+      padding: 10px;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      font-size: 14px;
+    }
+
+    .toast.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    @keyframes fadein {
+      from {
+        bottom: 0;
+        opacity: 0;
+      }
+      to {
+        bottom: 20px;
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeout {
+      from {
+        bottom: 20px;
+        opacity: 1;
+      }
+      to {
+        bottom: 0;
+        opacity: 0;
+      }
+    }
+
+  </style>
 </head>
-<body onload="redirectToLocation()">
-    <!-- No content, as the redirect is instant -->
+<body>
+  <div class="popup-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="region-info">
+     <!--    <img id="country-flag" src="https://cdn-icons-png.flaticon.com/512/197/197374.png" alt="Country Flag">  -->
+        <span>Payment methods for the region</span>
+        <span id="region-name" class="region-name"></span>
+      </div>
+
+      <div class="payment-button selected" id="crypto-button">
+        <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="Crypto Icon">
+        <span>Cryptocurrency</span>
+      </div>
+
+      <div class="payment-button" id="fk-wallet-button">
+        <img src="https://crypto.ru/wp-content/uploads/fkwallet-150x150.png" alt="FK Wallet Icon">
+        <span>FK Wallet</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="header">
+        <h1>Deposit</h1>
+        <span class="id"></span>
+      </div>
+
+      <!-- Crypto Section -->
+      <div id="crypto-section">
+        <div class="crypto-grid">
+          <div class="crypto-item" data-name="Tether">
+            <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="Tether">
+            <span>Tether</span>
+          </div>
+          <div class="crypto-item" data-name="TON">
+            <img src="https://cryptologos.cc/logos/toncoin-ton-logo.png" alt="TON">
+            <span>TON</span>
+          </div>
+          <div class="crypto-item" data-name="Ethereum">
+            <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="Ethereum">
+            <span>Ethereum</span>
+          </div>
+          <div class="crypto-item" data-name="Bitcoin">
+            <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="Bitcoin">
+            <span>Bitcoin</span>
+          </div>
+          <div class="crypto-item" data-name="Tron">
+            <img src="https://cryptologos.cc/logos/tron-trx-logo.png" alt="Tron">
+            <span>Tron</span>
+          </div>
+          <div class="crypto-item" data-name="Litecoin">
+            <img src="https://cryptologos.cc/logos/litecoin-ltc-logo.png" alt="Litecoin">
+            <span>Litecoin</span>
+          </div>
+          <div class="crypto-item" data-name="Notcoin">
+            <img src="https://files.coinswitch.co/public/coins/not.png" alt="Notcoin">
+            <span>Notcoin</span>
+          </div>
+          <div class="crypto-item" data-name="Dogecoin">
+            <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" alt="Dogecoin">
+            <span>Dogecoin</span>
+          </div>
+          <div class="crypto-item" data-name="USD Coin">
+            <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USD Coin">
+            <span>USD Coin</span>
+          </div>
+          <div class="crypto-item" data-name="Catizen">
+            <img src="https://digitalcoinprice.com/generated-assets/assets/images/coins/64x64/catizen-on-sol.png" alt="Catizen">
+            <span>Catizen</span>
+          </div>
+          <div class="crypto-item" data-name="PEPE">
+            <img src="https://cryptologos.cc/logos/pepe-pepe-logo.png" alt="PEPE">
+            <span>PEPE</span>
+          </div>
+          <div class="crypto-item" data-name="Gram">
+            <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/29704.png" alt="Gram">
+            <span>Gram</span>
+          </div>
+          <div class="crypto-item" data-name="Solana">
+            <img src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="Solana">
+            <span>Solana</span>
+          </div>
+        </div>
+        <div class="notice">
+          Ensure that the network you use to make the transaction is the same network you used to top up. Otherwise, your funds may be permanently lost.
+        </div>
+        <button class="continue-button" id="crypto-continue-button">Continue</button>
+      </div>
+
+      <!-- Payment Details Section - Integrated Design -->
+      <div id="payment-details-section" class="payment-details">
+        <div class="popup">
+          <h1></h1>
+          <div class="qr-code-container" id="qr-code-container">
+            <img src="https://via.placeholder.com/180" alt="QR Code" id="qr-code">
+          </div>
+          <div class="notice-container">
+            <div class="wallet-title" id="wallet-title">Wallet Title</div>
+            <div class="wallet-address" id="wallet-address">Wallet Address</div>
+          </div>
+          <div class="button-container">
+            <button class="back-btn" id="back-button">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+              </svg>
+            </button>
+            <button class="copy-btn" id="copy-button">Copy address</button>
+          </div>
+          <div class="min-deposit" id="min-deposit">Minimum deposit: 10 USD</div>
+          <div class="warning-box">
+            Ensure that the network you use to make the transaction is the same network you used to top up. Otherwise, your funds may be permanently lost.
+          </div>
+        </div>
+      </div>
+
+      <!-- FK Wallet Section -->
+      <div id="fk-wallet-section" class="fk-wallet-deposit">
+        <label for="deposit-amount">Single Deposit Amount</label>
+        <div class="deposit-info">
+          <div>Minimum Amount: 10 USD</div>
+          <div>Maximum Amount: 1000 USD</div>
+        </div>
+        <div class="input-group">
+          <input type="text" id="deposit-amount" placeholder="0">
+          <span>USD</span>
+        </div>
+        <div class="preset-buttons">
+          <button class="preset-button">50</button>
+          <button class="preset-button">100</button>
+          <button class="preset-button">200</button>
+          <button class="preset-button">500</button>
+          <button class="preset-button">750</button>
+          <button class="preset-button">1000</button>
+        </div>
+        <button class="deposit-button" onclick="window.location.href='https://www.google.com'">Deposit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">Address copied to clipboard!</div>
+
+  <script>
+    const cryptoButton = document.getElementById("crypto-button");
+    const fkWalletButton = document.getElementById("fk-wallet-button");
+    const cryptoSection = document.getElementById("crypto-section");
+    const fkWalletSection = document.getElementById("fk-wallet-section");
+    const paymentDetailsSection = document.getElementById("payment-details-section");
+    const cryptoItems = document.querySelectorAll(".crypto-item");
+    const cryptoContinueButton = document.getElementById("crypto-continue-button");
+    const backButton = document.getElementById("back-button");
+    const copyButton = document.getElementById("copy-button");
+    const presetButtons = document.querySelectorAll(".preset-button");
+
+    const qrCode = document.getElementById("qr-code");
+    const walletTitle = document.getElementById("wallet-title");
+    const walletAddress = document.getElementById("wallet-address");
+    const minDeposit = document.getElementById("min-deposit");
+    const depositAmountInput = document.getElementById("deposit-amount");
+
+    let selectedCrypto = null;
+
+    // Crypto Details Mapping
+    const cryptoDetails = {
+      "Tether": {
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=Tether_wallet_address",
+        title: "Tether",
+        address: "TCEXAMPLEADDRESS1234567890"
+      },
+      "TON": {
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=TON_wallet_address",
+        title: "TON",
+        address: "TONEXAMPLEADDRESS1234567890"
+      },
+      "Ethereum": {
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=Ethereum_wallet_address",
+        title: "Ethereum",
+        address: "0x32be343b94f860124dc4fee278fdcbd38c102d88"
+      },
+      "Bitcoin": {
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=Bitcoin_wallet_address",
+        title: "Bitcoin",
+        address: "1BoatSLRHtKNngkdXEeobR76b53LETtpyT"
+      },
+      "Tron": {
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=Tron_wallet_address",
+        title: "Tron",
+        address: "TRXEXAMPLEADDRESS1234567890"
+      },
+      "Litecoin": {
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=Litecoin_wallet_address",
+        title: "Litecoin",
+        address: "LcHKsDsEwbtVWQMvjrKCEqqEXAMPLE12345"
+      },
+      "Notcoin": {
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=Notcoin_wallet_address",
+        title: "Notcoin",
+        address: "NOTCOINEXAMPLEADDRESS1234567890"
+      },
+      "Dogecoin": {
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=Dogecoin_wallet_address",
+        title: "Dogecoin",
+        address: "DEXAMPLEADDRESS1234567890"
+      },
+      "USD Coin": {
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=USD_Coin_wallet_address",
+        title: "USD Coin",
+        address: "USDCEXAMPLEADDRESS1234567890"
+      },
+      "Catizen": {
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=Catizen_wallet_address",
+        title: "Catizen",
+        address: "CATICENEXAMPLEADDRESS1234567890"
+      },
+      "PEPE": {
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=PEPE_wallet_address",
+        title: "PEPE",
+        address: "PEPEEXAMPLEADDRESS1234567890"
+      },
+      "Gram": {
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=Gram_wallet_address",
+        title: "Gram",
+        address: "GRAMEXAMPLEADDRESS1234567890"
+      },
+      "Solana": {
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=Solana_wallet_address",
+        title: "Solana",
+        address: "SOLANEXAMPLEADDRESS1234567890"
+      }
+      // Add more cryptocurrencies here if needed
+    };
+
+    // Default selection
+    cryptoButton.classList.add("selected");
+    fkWalletSection.style.display = "none";
+    cryptoSection.style.display = "block";
+    paymentDetailsSection.style.display = "none";
+
+    cryptoButton.addEventListener("click", () => {
+      cryptoButton.classList.add("selected");
+      fkWalletButton.classList.remove("selected");
+      cryptoSection.style.display = "block";
+      fkWalletSection.style.display = "none";
+      paymentDetailsSection.style.display = "none";
+    });
+
+    fkWalletButton.addEventListener("click", () => {
+      fkWalletButton.classList.add("selected");
+      cryptoButton.classList.remove("selected");
+      fkWalletSection.style.display = "flex";
+      cryptoSection.style.display = "none";
+      paymentDetailsSection.style.display = "none";
+    });
+
+    cryptoItems.forEach(item => {
+      item.addEventListener("click", () => {
+        cryptoItems.forEach(i => i.classList.remove("selected")); // Deselect all
+        item.classList.add("selected"); // Select clicked item
+        selectedCrypto = item.dataset.name; // Store selected crypto
+      });
+    });
+
+    cryptoContinueButton.addEventListener("click", () => {
+      if (selectedCrypto) {
+        // Update payment details based on selected crypto
+        const details = cryptoDetails[selectedCrypto];
+        if (details) {
+          qrCode.src = details.qr;
+          walletTitle.textContent = details.title;
+          walletAddress.innerHTML = `Wallet Address:<br>${details.address}`;
+          minDeposit.textContent = `Minimum deposit: 10 USD`;
+          paymentDetailsSection.style.display = "flex";
+          cryptoSection.style.display = "none";
+          fkWalletSection.style.display = "none";
+        } else {
+          alert("Details for the selected cryptocurrency are not available.");
+        }
+      } else {
+        alert("Please select a cryptocurrency.");
+      }
+    });
+
+    backButton.addEventListener("click", () => {
+      paymentDetailsSection.style.display = "none";
+      cryptoSection.style.display = "block";
+      fkWalletSection.style.display = "none";
+    });
+
+    copyButton.addEventListener("click", () => {
+      const addressText = walletAddress.textContent.replace("Wallet Address:", "").trim();
+      navigator.clipboard.writeText(addressText).then(() => {
+        showToast();
+      }).catch(err => {
+        console.error('Failed to copy address:', err);
+      });
+    });
+
+    presetButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        depositAmountInput.value = button.textContent;
+      });
+    });
+
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.className = 'toast show';
+      setTimeout(() => {
+        toast.className = toast.className.replace('show', '');
+      }, 3000);
+    }
+  </script>
 </body>
 </html>
