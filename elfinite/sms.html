@@ -3,72 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMS Order</title>
+    <title>JSONP Example</title>
     <script>
-        async function orderSMS() {
+        function handleResponse(data) {
+            if (data.success) {
+                document.getElementById('numberGenerated').value = `${data.orderid}:${data.number}`;
+                document.getElementById('status').innerText = "Number generated successfully!";
+            } else {
+                document.getElementById('status').innerText = `Error: ${data.message}`;
+            }
+        }
+
+        function fetchNumber() {
             const apiKey = document.getElementById('apiKey').value;
             const countryCode = document.getElementById('countryCode').value;
             const countryId = document.getElementById('countryId').value;
             const maxPrice = document.getElementById('maxPrice').value;
 
-            const url = "https://cors-anywhere.herokuapp.com/https://api.smspool.net/purchase/sms";
-            const payload = {
-                country: countryCode, // ISO alpha-2 country code
-                service: 1034,        // Service ID
-                max_price: parseFloat(maxPrice), // Maximum price
-                quantity: 1           // Number of numbers to order
-            };
+            const url = `https://api.example.com/sms?callback=handleResponse&key=${apiKey}&country=${countryCode}&id=${countryId}&max_price=${maxPrice}`;
 
-            document.getElementById('status').innerText = "Processing...";
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        document.getElementById('numberGenerated').value = `${data.orderid}:${data.number}`;
-                        document.getElementById('status').innerText = "Number generated successfully!";
-                    } else {
-                        document.getElementById('status').innerText = `Error: ${data.message}`;
-                    }
-                } else {
-                    document.getElementById('status').innerText = `HTTP Error: ${response.status}`;
-                }
-            } catch (error) {
-                document.getElementById('status').innerText = `Error: ${error.message}`;
-            }
+            const script = document.createElement('script');
+            script.src = url;
+            document.body.appendChild(script);
         }
     </script>
 </head>
 <body>
-    <h1>SMS Order Webpage</h1>
-
+    <h1>SMS Order</h1>
     <label for="apiKey">API Key:</label>
-    <input type="text" id="apiKey" placeholder="Enter API Key" required><br><br>
-
+    <input type="text" id="apiKey"><br><br>
     <label for="countryCode">Country Code:</label>
-    <input type="text" id="countryCode" placeholder="Enter ISO Country Code (e.g., US)" required><br><br>
-
+    <input type="text" id="countryCode"><br><br>
     <label for="countryId">Country ID:</label>
-    <input type="text" id="countryId" placeholder="Enter Country ID" required><br><br>
-
+    <input type="text" id="countryId"><br><br>
     <label for="maxPrice">Max Price:</label>
-    <input type="text" id="maxPrice" placeholder="Enter Max Price (e.g., 0.5)" required><br><br>
-
-    <button onclick="orderSMS()">Order SMS</button>
-
-    <h2>Status:</h2>
+    <input type="text" id="maxPrice"><br><br>
+    <button onclick="fetchNumber()">Order SMS</button>
     <p id="status">Idle</p>
-
-    <h2>Generated Number:</h2>
     <input type="text" id="numberGenerated" readonly>
 </body>
 </html>
